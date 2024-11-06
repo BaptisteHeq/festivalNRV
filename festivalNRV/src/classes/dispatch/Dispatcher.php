@@ -3,6 +3,7 @@
 namespace iutnc\nrv\dispatch;
 
 use iutnc\nrv\action\AddSoireeAction;
+use iutnc\nrv\action\AddSpectacleToSoireeAction;
 use iutnc\nrv\action\DefaultAction;
 use iutnc\nrv\action\AddSpectacleAction;
 use iutnc\nrv\action\DeleteSoireeAction;
@@ -24,6 +25,10 @@ class Dispatcher
     public function run()
     {
         switch ($this->action) {
+            case 'add-spec-to-soiree':
+                $action = new AddSpectacleToSoireeAction();
+                $html = $action->execute();
+                break;
             case 'delete-soiree':
                 $action = new DeleteSoireeAction();
                 $html = $action->execute();
@@ -81,6 +86,7 @@ class Dispatcher
     <h1>Festival NRV</h1>
     <nav>
     <ul>
+    <li><a href="?action=add-spec-to-soiree">Ajouter un spectacle à une soirée</a></li>
     <li><a href="?action=delete-soiree">Supprimer une soirée</a></li>
     <li><a href="?action=add-soiree">Ajouter une soirée</a></li>
     <li><a href="?action=soiree">Soirée</a></li>

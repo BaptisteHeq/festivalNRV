@@ -2,12 +2,13 @@
 
 namespace iutnc\nrv\renderer;
 
+use iutnc\nrv\evenement\soiree\Soiree;
 use iutnc\nrv\evenement\spectacle\Spectacle;
 
 class SoireeRenderer implements Renderer
 {
 
-    private $soiree;
+    private Soiree $soiree;
 
     public function __construct($soiree)
     {

@@ -22,7 +22,7 @@ class SpectacleRenderer implements Renderer
             $html .= '<p>Date: ' . $this->spectacle->getDate() . '</p>';
             $html .= '<p>Style: ' . $this->spectacle->getStyle() . '</p>';
             $html .= '<p>Horaire: ' . $this->spectacle->getHoraire() . '</p>';
-            $html .= '<p><img src="' . $this->spectacle->getImg() . '" alt="image spectacle"></p>';
+            $html .= '<p><img src="./media/' . $this->spectacle->getImg() . '" alt="image spectacle" width="100px"></p>';
         } else if ($selector == Renderer::DETAIL) {
             /*ffichage détaillé d’un spectacle : titre, artistes, description, style, durée, image(s), extrait audio/vidéo*/
             $html .= '<p><b>' . $this->spectacle->getNom() . '</b></p>';

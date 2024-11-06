@@ -25,6 +25,7 @@ class DisplayProgrammeAction extends Action
         foreach ($soirees as $s){
 
             $soiree= new Soiree($s['SoireeID'],$s['DateSoiree'],$s['LieuID'],$s['horaire'],$s['thematique'],$s['tarifs'],$s['nomSoiree']);
+            $html .= '<h1>Soirée : ' . $soiree->getNom() . '</h1>';
             $html .= '<h2> Le ' . $soiree->getDate() . '</h2>';
             $html .= '<p> à ' . $r->getLieuByID($soiree->getLieuID()) . '</p>';
             $html .= '<p>Spectacles : </p>';

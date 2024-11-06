@@ -111,7 +111,7 @@ class NrvRepository
         unlink('./media/'.$row['video']);
 
         //supprimer les spectacles de la soirée
-        $sql = "DELETE FROM soirees_pectacles WHERE SpectacleID = :spectacleID";
+        $sql = "DELETE FROM soirees_spectacles WHERE SpectacleID = :spectacleID";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['spectacleID' => $spectacleID]);
 
@@ -167,7 +167,7 @@ class NrvRepository
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['soireeID' => $soireeID, 'spectacleID' => $spectacleID]);
 
-        $sql = "INSERT INTO soirees_pectacles(SoireeID, SpectacleID) VALUES ( :soireeID, :spectacleID)";
+        $sql = "INSERT INTO soirees_spectacles(SoireeID, SpectacleID) VALUES ( :soireeID, :spectacleID)";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['soireeID' => $soireeID, 'spectacleID' => $spectacleID]);
     }
@@ -179,10 +179,35 @@ class NrvRepository
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['spectacleID' => $spectacleID]);
 
-        $sql = "DELETE FROM soirees_pectacles WHERE SoireeID = :soireeID AND SpectacleID = :spectacleID";
+        $sql = "DELETE FROM soirees_spectacles WHERE SoireeID = :soireeID AND SpectacleID = :spectacleID";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['soireeID' => $soireeID, 'spectacleID' => $spectacleID]);
     }
+
+    public function getSpectacles()
+    {
+        $sql = "SELECT * FROM spectacles";
+        $stmt = $this->pdo->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getSoireeByID(int $soireeID) : array
+    {
+        $sql = "SELECT * FROM soirees WHERE SoireeID = :soireeID";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['soireeID' => $soireeID]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    /* get Spectacle sans soiree */
+    public function getSpectaclesSansSoiree()
+    {
+        $sql = "SELECT * FROM spectacles WHERE SoireeID IS NULL";
+        $stmt = $this->pdo->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
 
 }
 
