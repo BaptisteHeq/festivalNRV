@@ -4,7 +4,10 @@ namespace iutnc\nrv\dispatch;
 
 use iutnc\nrv\action\DefaultAction;
 use iutnc\nrv\action\AddSpectacleAction;
+use iutnc\nrv\action\DeleteSpectacleAction;
 use iutnc\nrv\action\DisplaySpectacleAction;
+use iutnc\nrv\action\DisplayProgrammeAction;
+use iutnc\nrv\action\DisplaySpectacleDetailAction;
 
 class Dispatcher
 {
@@ -18,6 +21,18 @@ class Dispatcher
     public function run()
     {
         switch ($this->action) {
+            case 'delete-spectacle':
+                $action = new DeleteSpectacleAction();
+                $html = $action->execute();
+                break;
+            case 'spectacle-detail':
+                $action = new DisplaySpectacleDetailAction();
+                $html = $action->execute();
+                break;
+            case 'programme':
+                $action = new DisplayProgrammeAction();
+                $html = $action->execute();
+                break;
             case 'spectacle':
                 $action = new DisplaySpectacleAction();
                 $html = $action->execute();
@@ -51,8 +66,9 @@ class Dispatcher
     <h1>Festival NRV</h1>
     <nav>
     <ul>
-    <li><a href="?action=spectacle">Spectacle en session</a></li>
+    <li><a href="?action=spectacle-detail">Spectacle en session</a></li>
     <li><a href="?action=add-spectacle">Ajouter un spectacle</a></li>
+    <li><a href="?action=programme">Programme</a></li>
     </ul>
     </header>
     
