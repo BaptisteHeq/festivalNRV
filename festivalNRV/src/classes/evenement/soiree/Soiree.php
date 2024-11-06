@@ -4,6 +4,7 @@ namespace iutnc\nrv\evenement\soiree;
 
 use iutnc\nrv\evenement\programme\Programme;
 use iutnc\nrv\evenement\spectacle\Spectacle;
+use iutnc\nrv\repository\NrvRepository;
 
 class Soiree
 {
@@ -13,9 +14,10 @@ class Soiree
     private string $horaire;
     private string $thematique;
     private float $prix;
-    private array $spectacles;
+    private string $nom;
+    private array $spectacles=[];
 
-    public function __construct(int $soireeID, string $date, int $lieuID, string $horaire, string $thematique, float $prix)
+    public function __construct(int $soireeID, string $date, int $lieuID, string $horaire, string $thematique, float $prix, string $nom)
     {
         $this->soireeID = $soireeID;
         $this->date = $date;
@@ -23,6 +25,7 @@ class Soiree
         $this->horaire = $horaire;
         $this->thematique = $thematique;
         $this->prix = $prix;
+        $this->nom = $nom;
     }
 
 
@@ -39,6 +42,38 @@ class Soiree
     public function getDate(): string
     {
         return $this->date;
+    }
+
+    public function getLieu(): string
+    {
+        $r = NrvRepository::getInstance();
+        return $r->getLieuByID($this->lieuID);
+
+    }
+
+    public function getPrix(): float
+    {
+        return $this->prix;
+    }
+
+    public function getSpectacles(): array
+    {
+        return $this->spectacles;
+    }
+
+    public function getThematique(): string
+    {
+        return $this->thematique;
+    }
+
+    public function getHoraire(): string
+    {
+        return $this->horaire;
+    }
+
+    public function getNom(): string
+    {
+        return $this->nom;
     }
 
     public function getLieuID(): int

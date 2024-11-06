@@ -24,13 +24,13 @@ class DisplayProgrammeAction extends Action
         $html .= '<p><b>Affichage des soirees</b></p><br>';
         foreach ($soirees as $s){
 
-            $soiree= new Soiree($s['SoireeID'],$s['DateSoiree'],$s['LieuID'],$s['horaire'],$s['thematique'],$s['tarifs']);
+            $soiree= new Soiree($s['SoireeID'],$s['DateSoiree'],$s['LieuID'],$s['horaire'],$s['thematique'],$s['tarifs'],$s['nomSoiree']);
             $html .= '<h2> Le ' . $soiree->getDate() . '</h2>';
             $html .= '<p> à ' . $r->getLieuByID($soiree->getLieuID()) . '</p>';
             $html .= '<p>Spectacles : </p>';
             $spectacles = $r->getSpectaclesByID($soiree->getSoireeID());
             foreach ($spectacles as $spectacle){
-                $sp = new Spectacle($spectacle['NomSpectacle'],$spectacle['DateSpectacle'],$spectacle['StyleID'],$spectacle['horaire'],$spectacle['image'],$spectacle['description'],$spectacle['video'],$spectacle['artistes']);
+                $sp = new Spectacle($spectacle['NomSpectacle'],$spectacle['DateSpectacle'],$spectacle['StyleID'],$spectacle['horaire'],$spectacle['image'],$spectacle['description'],$spectacle['video'],$spectacle['artistes'],$spectacle['duree']);
                 $re = new SpectacleRenderer($sp);
                 $html .= $re->render(Renderer::COMPACT);
             }

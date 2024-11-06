@@ -2,9 +2,12 @@
 
 namespace iutnc\nrv\dispatch;
 
+use iutnc\nrv\action\AddSoireeAction;
 use iutnc\nrv\action\DefaultAction;
 use iutnc\nrv\action\AddSpectacleAction;
+use iutnc\nrv\action\DeleteSoireeAction;
 use iutnc\nrv\action\DeleteSpectacleAction;
+use iutnc\nrv\action\DisplaySoireeAction;
 use iutnc\nrv\action\DisplaySpectacleAction;
 use iutnc\nrv\action\DisplayProgrammeAction;
 use iutnc\nrv\action\DisplaySpectacleDetailAction;
@@ -21,6 +24,18 @@ class Dispatcher
     public function run()
     {
         switch ($this->action) {
+            case 'delete-soiree':
+                $action = new DeleteSoireeAction();
+                $html = $action->execute();
+                break;
+            case 'add-soiree':
+                $action = new AddSoireeAction();
+                $html = $action->execute();
+                break;
+            case 'soiree':
+                $action = new DisplaySoireeAction();
+                $html = $action->execute();
+                break;
             case 'delete-spectacle':
                 $action = new DeleteSpectacleAction();
                 $html = $action->execute();
@@ -66,9 +81,13 @@ class Dispatcher
     <h1>Festival NRV</h1>
     <nav>
     <ul>
+    <li><a href="?action=delete-soiree">Supprimer une soirée</a></li>
+    <li><a href="?action=add-soiree">Ajouter une soirée</a></li>
+    <li><a href="?action=soiree">Soirée</a></li>
     <li><a href="?action=spectacle-detail">Spectacle en session</a></li>
     <li><a href="?action=add-spectacle">Ajouter un spectacle</a></li>
     <li><a href="?action=programme">Programme</a></li>
+    
     </ul>
     </header>
     
