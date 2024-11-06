@@ -36,6 +36,5 @@ replay_pid*
 /dataSources/
 /dataSources.local.xml
 
-vendor/
-composer.lock
+
 
