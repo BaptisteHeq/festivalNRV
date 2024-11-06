@@ -1,2 +1,11 @@
 {
+  "name": "sae/nrv",
+  "description": "festival NRV",
+  "type": "project",
+  "autoload": {
+    "psr-4": {
+      "iutnc\\nrv\\" : "./src/classes"
+    }
+  }
+
 }
