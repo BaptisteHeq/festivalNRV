@@ -38,3 +38,6 @@ replay_pid*
 
 vendor/
 composer.lock
+
+# fichier macos
+.DS_Store
