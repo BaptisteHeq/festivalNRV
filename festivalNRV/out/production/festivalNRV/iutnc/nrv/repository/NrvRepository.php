@@ -51,7 +51,18 @@ class NrvRepository
         $stmt = $this->pdo->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
     */
+
+    public function getStylesByID(int $styleID): string
+    {
+        $sql = "SELECT NomStyle FROM styles WHERE styleID = :styleID";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['styleID' => $styleID]);
+        return $stmt->fetchColumn();
+    }
+
+
 }
 
 

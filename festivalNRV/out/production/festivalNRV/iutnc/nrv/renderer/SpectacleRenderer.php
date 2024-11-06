@@ -17,14 +17,12 @@ class SpectacleRenderer implements Renderer
     public function render(int $selector): string
     {
         $html = "";
-        $spectacle = $this->spectacle;
-        $html .= "<h2>" . $spectacle->getNom() . "</h2>";
-            $html .= "<p>Date : " . $spectacle->getDate() . "</p>";
-            $html .= "<p>Heure : " . $spectacle->getHeure() . "</p>";
-            $html .= "<p>Durée : " . $spectacle->getDuree() . "</p>";
-            $html .= "<p>Description : " . $spectacle->getDescription() . "</p>";
-            $html .= "<img src='" . $spectacle->getImage() . "' alt='Image du spectacle'>";
-
+        if ($selector == Renderer::COMPACT) {
+            $html .= '<p><b>Spectacle</b></p>';
+            $html .= '<p>Nom: ' . $this->spectacle->getNom() . '</p>';
+            $html .= '<p>Date: ' . $this->spectacle->getDate() . '</p>';
+            $html .= '<p>Style: ' . $this->spectacle->getStyle() . '</p>';
+        }
         return $html;
     }
 }

@@ -2,24 +2,25 @@
 
 namespace iutnc\nrv\evenement\programme;
 
+use iutnc\nrv\evenement\soiree\Soiree;
 use iutnc\nrv\evenement\spectacle\Spectacle;
 
 class Programme
 {
-    private array $spectacles;
+    private array $soirees;
 
     public function __construct()
     {
-        $this->spectacles = [];
+        $this->soirees = [];
     }
 
-    public function addSpectacle(Spectacle $spectacle): void
+    public function addSoiree(Soiree $soiree): void
     {
-        $this->spectacles[] = $spectacle;
+        $this->soirees[] = $soiree;
     }
 
     public function getSpectacles(): array
     {
-        return $this->spectacles;
+        return $this->soirees;
     }
 }

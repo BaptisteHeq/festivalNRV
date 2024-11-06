@@ -2,24 +2,25 @@
 
 namespace iutnc\nrv\evenement\spectacle;
 
+
+
+use iutnc\nrv\repository\NrvRepository;
+
 class Spectacle
 {
     private string $nom;
     private string $date;
-    private string $heure;
-    private string $duree;
-    private string $description;
-    private string $image;
+    private int $spectacleID;
+    private int $soireeID;
+    private int $styleID;
 
-    public function __construct(string $nom, string $date, string $heure, string $duree, string $description, string $image)
+    public function __construct(string $nom, string $date, int $styleID)
     {
         $this->nom = $nom;
         $this->date = $date;
-        $this->heure = $heure;
-        $this->duree = $duree;
-        $this->description = $description;
-        $this->image = $image;
+        $this->styleID = $styleID;
     }
+
 
     public function getNom(): string
     {
@@ -31,23 +32,37 @@ class Spectacle
         return $this->date;
     }
 
-    public function getHeure(): string
+    public function getStyleID(): int
     {
-        return $this->heure;
+        return $this->styleID;
     }
 
-    public function getDuree(): string
+    public function getSpectacleID(): int
     {
-        return $this->duree;
+        return $this->spectacleID;
     }
 
-    public function getDescription(): string
+    public function getSoireeID(): int
     {
-        return $this->description;
+        return $this->soireeID;
     }
 
-    public function getImage(): string
+    public function setSpectacleID(int $spectacleID): void
     {
-        return $this->image;
+        $this->spectacleID = $spectacleID;
     }
+
+    public function setSoireeID(int $soireeID): void
+    {
+        $this->soireeID = $soireeID;
+    }
+
+    /* renvoie le nom du style du spectacle en utilisant getStyleById*/
+    public function getStyle(): string
+    {
+        $r = NrvRepository::getInstance();
+        return $r->getStylesByID($this->styleID);
+    }
+
+
 }
