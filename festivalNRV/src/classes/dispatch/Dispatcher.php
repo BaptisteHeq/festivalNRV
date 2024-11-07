@@ -4,7 +4,8 @@ namespace iutnc\nrv\dispatch;
 
 use iutnc\nrv\action\AddSoireeAction;
 use iutnc\nrv\action\AddSpectacleToSoireeAction;
-use iutnc\nrv\action\AddUserAction;
+use iutnc\nrv\action\AfficherSpectaclesAction;
+
 use iutnc\nrv\action\DefaultAction;
 use iutnc\nrv\action\AddSpectacleAction;
 use iutnc\nrv\action\DeleteSoireeAction;
@@ -13,8 +14,10 @@ use iutnc\nrv\action\DisplaySoireeAction;
 use iutnc\nrv\action\DisplaySpectacleAction;
 use iutnc\nrv\action\DisplayProgrammeAction;
 use iutnc\nrv\action\DisplaySpectacleDetailAction;
+
 use iutnc\nrv\action\SignInAction;
 use iutnc\nrv\action\UpdateSpectacleAction;
+
 
 class Dispatcher
 {
@@ -68,6 +71,11 @@ class Dispatcher
                 $action = new AddSpectacleAction();
                 $html = $action->execute();
                 break;
+
+            case 'display_spectacle':
+                $action = new AfficherSpectaclesAction();
+                $html=$action->execute();
+                break;
             case 'signin':
                 $action = new SignInAction();
                 $html = $action->execute();
@@ -105,6 +113,7 @@ class Dispatcher
     <li><a href="?action=add-spectacle">Ajouter un spectacle</a></li>
     <li><a href="?action=update-spectacle">Editer le spectacle en session</a></li>
     <li><a href="?action=programme">Programme</a></li>
+    <li><a href="?action=display_spectacle">Liste des spectacles</a></li>
     <li><a href="?action=signin">Se connecter</a></li>
     </ul>
     </header>

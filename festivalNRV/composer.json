@@ -6,6 +6,8 @@
     "psr-4": {
       "iutnc\\nrv\\" : "./src/classes"
     }
+  },
+  "require": {
+    "ext-pdo": "*"
   }
-
 }
