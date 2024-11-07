@@ -272,6 +272,14 @@ class NrvRepository
         return $stmt->fetchColumn();
     }
 
+    public function getRoleUser(string $email): int
+    {
+        $sql = "SELECT role FROM Utilisateurs WHERE EmailUtilisateur = :email";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['email' => $email]);
+        return $stmt->fetchColumn();
+    }
+
 }
 
 
