@@ -27,10 +27,8 @@ class DeleteSpectacleToSoireeAction extends Action
             $soiree = unserialize($_SESSION['soiree']);
             $r = NrvRepository::getInstance();
             $r->deleteSpectacleFromSoiree( $soiree->getSoireeID(), $sp->getSpectacleID());
-            $soiree->deleteSpectacle($sp->getSpectacleID());
             $_SESSION['soiree'] = serialize($soiree);
-            unset($_SESSION['spectacle']);
-            $html .= 'spectacle supprimé de la soirée en session';
+            $html .= 'spectacle supprimé de la soirée';
         }
         return $html;
     }

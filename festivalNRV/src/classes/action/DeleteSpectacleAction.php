@@ -5,6 +5,7 @@ namespace iutnc\nrv\action;
 
 use iutnc\nrv\auth\AuthzProvider;
 use iutnc\nrv\repository\NrvRepository;
+use iutnc\nrv\evenement\soiree\Soiree;
 
 class DeleteSpectacleAction extends Action
 {
@@ -27,11 +28,7 @@ class DeleteSpectacleAction extends Action
             $sp = unserialize($_SESSION['spectacle']);
             $r = NrvRepository::getInstance();
             $r->deleteSpectacle($sp->getSpectacleID());
-            if (isset($_SESSION['soiree'])) {
-                $soiree = unserialize($_SESSION['soiree']);
-                $soiree->deleteSpectacle($sp->getSpectacleID());
-                $_SESSION['soiree'] = serialize($soiree);
-            }
+
 
             unset($_SESSION['spectacle']);
             $html .= 'spectacle supprimé';

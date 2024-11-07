@@ -13,6 +13,7 @@ session_start();
 
 
 
+
 $action = $_GET['action'] ?? 'default';
 $dispatcher = new Dispatcher($action);
 $dispatcher->run();

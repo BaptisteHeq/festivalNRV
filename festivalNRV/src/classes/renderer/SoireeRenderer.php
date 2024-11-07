@@ -4,6 +4,7 @@ namespace iutnc\nrv\renderer;
 
 use iutnc\nrv\evenement\soiree\Soiree;
 use iutnc\nrv\evenement\spectacle\Spectacle;
+use iutnc\nrv\repository\NrvRepository;
 
 class SoireeRenderer implements Renderer
 {
@@ -33,8 +34,11 @@ tarifs, ainsi que la liste des spectacles : titre, artistes, description, style 
             $html .= '<p><b>Liste des spectacles</b></p>';
             $html .= '<ul>';
             /*En cliquant sur un spectacle dans la liste, le détail de la soirée correspondante est affiché, */
-            foreach ($this->soiree->getSpectacles() as $spectacle) {
+            $r = NrvRepository::getInstance();
+            $spectacles = $r->getSpectaclesByIDsoiree($this->soiree->getSoireeID());
+            foreach ($spectacles as $sp) {
                 $html .= '<a href="?action=spectacle-detail">';
+                $spectacle = new Spectacle($sp['NomSpectacle'], $sp['DateSpectacle'], $sp['StyleID'], $sp['horaire'], $sp['image'], $sp['description'], $sp['video'], $sp['artistes'], $sp['duree']);
                 $re = new SpectacleRenderer($spectacle);
                 $html .= '<li>' . $re->render(Renderer::COMPACT) . '</li>';
                 $html .= '</a>';

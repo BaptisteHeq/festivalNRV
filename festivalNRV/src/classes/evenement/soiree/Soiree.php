@@ -35,12 +35,18 @@ class Soiree
     }
 
     //supprimer spectacle
-    public function deleteSpectacle(Spectacle $spectacle): void
+    public function deleteSpectacleDeSoiree(int $spectacleID): void
     {
-        $key = array_search($spectacle, $this->spectacles);
-        if ($key !== false) {
-            unset($this->spectacles[$key]);
+        $newSpectacles = [];
+
+
+        foreach ($this->spectacles as $sp){
+            if ($sp->getSpectacleID() != $spectacleID){
+                $newSpectacles[] = $sp;
+                echo 'id dans la boucle'.$sp->getSpectacleID();
+            }
         }
+        $this->spectacles = $newSpectacles;
     }
 
     public function getSoireeID(): int
