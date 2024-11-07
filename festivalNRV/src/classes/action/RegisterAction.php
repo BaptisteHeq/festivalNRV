@@ -7,14 +7,16 @@ namespace iutnc\nrv\action;
 use iutnc\nrv\auth\AuthnProvider;
 use iutnc\nrv\exception\AuthnException;
 
-class SignInAction extends Action
+class RegisterAction extends Action
 {
     public function execute(): string{
         $html = "";
         if($_SERVER['REQUEST_METHOD'] === 'GET'){
             $html .= <<<HTML
-            <h2>Connexion</h2>
-            <form method="post" action="?action=signin">
+            <h2>Inscription</h2>
+            <form method="post" action="?action=register">
+                <label>Nom</label>  
+                <input type="text" name="nom" required>
                 <label>Email</label>
                 <input type="email" name="email" required> <br>
                 <label>Mot de passe</label>
@@ -25,16 +27,16 @@ class SignInAction extends Action
         }elseif($_SERVER['REQUEST_METHOD'] === 'POST'){
             $email = filter_var($_POST['email'], FILTER_SANITIZE_STRING);
             $password = filter_var($_POST['password'], FILTER_SANITIZE_STRING);
-            try{
-                $bool = AuthnProvider::signin($email, $password);
-                if($bool)
-                    $html .= '<p>Connexion réussie</p>';
-                else
-                    $html .= '<p>Connexion échouée</p>';
+            $nom = filter_var($_POST['nom'], FILTER_SANITIZE_STRING);
 
-            }catch(AuthnException $e){
+            try {
+                AuthnProvider::register($nom, $email, $password);
+                $html .= '<p>Inscription réussie</p>';
+            }
+            catch(AuthnException $e){
                 $html .= $e->getMessage();
             }
+
         }
         return $html;
     }

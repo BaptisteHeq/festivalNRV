@@ -15,9 +15,12 @@ use iutnc\nrv\action\DisplaySoireeAction;
 use iutnc\nrv\action\DisplaySpectacleAction;
 use iutnc\nrv\action\DisplayProgrammeAction;
 use iutnc\nrv\action\DisplaySpectacleDetailAction;
+use iutnc\nrv\action\RegisterAction;
+use iutnc\nrv\action\SignOutAction;
 
 use iutnc\nrv\action\SignInAction;
 use iutnc\nrv\action\UpdateSpectacleAction;
+use iutnc\nrv\repository\NrvRepository;
 
 
 class Dispatcher
@@ -85,6 +88,14 @@ class Dispatcher
                 $action = new SignInAction();
                 $html = $action->execute();
                 break;
+            case 'signout':
+                $action = new SignOutAction();
+                $html = $action->execute();
+                break;
+            case 'register':
+                $action = new RegisterAction();
+                $html = $action->execute();
+                break;
             default:
                 $action = new DefaultAction();
                 $html = $action->execute();
@@ -97,6 +108,15 @@ class Dispatcher
 
     public function renderPage ($html)
     {
+        $email = "pas connecté";
+        $nom = "pas connecté";
+        if(isset($_SESSION['email']))
+        {
+            $email = $_SESSION['email'];
+            $r = NrvRepository::getInstance();
+            $nom = $r->getNomUser($email);
+        }
+
         echo <<<HTML
 <!DOCTYPE html>
 <html lang="fr">
@@ -108,6 +128,11 @@ class Dispatcher
     </head>
     <header>
     <h1>Festival NRV</h1>
+    <h2>utilisateur : $email, $nom</h2>
+    <button onclick="window.location.href='?action=signin';">connexion</button>
+    <button onclick="window.location.href='?action=register';">inscription</button>
+    <button onclick="window.location.href='?action=signout';">déconnexion</button>
+    
     <nav>
     <ul>
     <li><a href="?action=add-spec-to-soiree">Ajouter un spectacle à une soirée</a></li>
@@ -119,7 +144,6 @@ class Dispatcher
     <li><a href="?action=update-spectacle">Editer le spectacle en session</a></li>
     <li><a href="?action=programme">Programme</a></li>
     <li><a href="?action=display_spectacle">Liste des spectacles</a></li>
-    <li><a href="?action=signin">Se connecter</a></li>
     </ul>
     </header>
     

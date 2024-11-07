@@ -246,12 +246,30 @@ class NrvRepository
         return new Spectacle($row['NomSpectacle'], $row['DateSpectacle'], $row['StyleID'], $row['horaire'], $row['image'], $row['description'], $row['video'], $row['artistes'], $row['duree']);
     }
 
-    public function getHashUser(string $email): String
+    public function getHashUser(string $email): ?String
     {
         $sql = "SELECT password FROM Utilisateurs WHERE EmailUtilisateur = :email";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['email' => $email]);
+        if($stmt->rowCount() == 0){
+            return null;
+        }
         return $stmt->fetch(PDO::FETCH_ASSOC)['password'];
+    }
+
+    public function addUser(string $nom, string $email, string $hash): void
+    {
+        $sql = "INSERT INTO Utilisateurs(NomUtilisateur, EmailUtilisateur, password, role) VALUES ( :nom, :email, :hash, 1)";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([ 'nom' => $nom, 'email' => $email, 'hash' => $hash]);
+    }
+
+    public function getNomUser(string $email): string
+    {
+        $sql = "SELECT NomUtilisateur FROM Utilisateurs WHERE EmailUtilisateur = :email";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['email' => $email]);
+        return $stmt->fetchColumn();
     }
 
 }
