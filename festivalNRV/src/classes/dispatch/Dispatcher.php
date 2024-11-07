@@ -21,6 +21,7 @@ use iutnc\nrv\action\SignOutAction;
 use iutnc\nrv\action\SignInAction;
 use iutnc\nrv\action\UpdateSpectacleAction;
 use iutnc\nrv\repository\NrvRepository;
+use iutnc\nrv\action\UpdateRoleAction;
 
 
 class Dispatcher
@@ -96,6 +97,10 @@ class Dispatcher
                 $action = new RegisterAction();
                 $html = $action->execute();
                 break;
+            case 'update-role':
+                $action = new UpdateRoleAction();
+                $html = $action->execute();
+                break;
             default:
                 $action = new DefaultAction();
                 $html = $action->execute();
@@ -144,6 +149,7 @@ class Dispatcher
     <li><a href="?action=update-spectacle">Editer le spectacle en session</a></li>
     <li><a href="?action=programme">Programme</a></li>
     <li><a href="?action=display_spectacle">Liste des spectacles</a></li>
+    <li><a href="?action=update-role">Mettre à jour le role d'un utilisateur</a></li>
     </ul>
     </header>
     

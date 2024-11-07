@@ -280,6 +280,20 @@ class NrvRepository
         return $stmt->fetchColumn();
     }
 
+    public function getLstUsers(): array
+    {
+        $sql = "SELECT * FROM Utilisateurs";
+        $stmt = $this->pdo->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function updateRole(int $id, int $role): void
+    {
+        $sql = "UPDATE Utilisateurs SET role = :role WHERE UtilisateurID = :id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['role' => $role, 'id' => $id]);
+    }
+
 }
 
 
