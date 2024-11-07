@@ -2,6 +2,7 @@
 
 namespace iutnc\nrv\action;
 
+use iutnc\nrv\auth\AuthzProvider;
 use iutnc\nrv\evenement\programme\Programme;
 use iutnc\nrv\evenement\spectacle\Spectacle;
 use iutnc\nrv\repository\NrvRepository;
@@ -11,10 +12,14 @@ class AddSpectacleAction extends Action
     public function __construct()
     {
         parent::__construct();
+        $this->role = 50;
     }
 
     public function execute(): string
     {
+        if(!AuthzProvider::isAuthorized($this->role))
+            return "Vous n'êtes pas autorisé à accéder à cette page";
+
         $html = "";
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $html .= <<<HTML

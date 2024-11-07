@@ -9,6 +9,7 @@ abstract class Action
     protected ?string $http_method = null;
     protected ?string $hostname = null;
     protected ?string $script_name = null;
+    protected ?int $role = null;
 
     public function __construct()
     {
