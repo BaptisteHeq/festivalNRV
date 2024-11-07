@@ -5,7 +5,7 @@ namespace iutnc\nrv\repository;
 use Exception;
 use iutnc\nrv\evenement\spectacle\Spectacle;
 use PDO;
-use iutnc\nrv\evenement\spectacle\Spectacle;
+
 
 class NrvRepository
 {
