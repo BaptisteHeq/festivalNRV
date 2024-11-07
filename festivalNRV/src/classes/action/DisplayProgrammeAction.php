@@ -29,7 +29,7 @@ class DisplayProgrammeAction extends Action
             $html .= '<h2> Le ' . $soiree->getDate() . '</h2>';
             $html .= '<p> à ' . $r->getLieuByID($soiree->getLieuID()) . '</p>';
             $html .= '<p>Spectacles : </p>';
-            $spectacles = $r->getSpectaclesByID($soiree->getSoireeID());
+            $spectacles = $r->getSpectaclesByIDsoiree($soiree->getSoireeID());
             foreach ($spectacles as $spectacle){
                 $sp = new Spectacle($spectacle['NomSpectacle'],$spectacle['DateSpectacle'],$spectacle['StyleID'],$spectacle['horaire'],$spectacle['image'],$spectacle['description'],$spectacle['video'],$spectacle['artistes'],$spectacle['duree']);
                 $re = new SpectacleRenderer($sp);

@@ -3,6 +3,7 @@
 namespace iutnc\nrv\action;
 
 use iutnc\nrv\evenement\soiree\Soiree;
+use iutnc\nrv\evenement\spectacle\Spectacle;
 use iutnc\nrv\repository\NrvRepository;
 
 class AddSpectacleToSoireeAction extends Action
@@ -12,6 +13,9 @@ class AddSpectacleToSoireeAction extends Action
         parent::__construct();
     }
 
+    /**
+     * @throws \Exception
+     */
     public function execute(): string
     {
         $html = '<p><b>Ajout d\'un spectacle à la soirée en session</b></p><br>';
@@ -52,7 +56,12 @@ class AddSpectacleToSoireeAction extends Action
                     $r->addSpectacleToSoiree( $_POST['soiree'] , $_POST['spectacle']);
                     $html .= 'Spectacle ajouté à la soirée';
 
-                    $so = new Soiree($_SESSION['soiree']->getSoireeID(),$_SESSION['soiree']->getDate(),$_SESSION['soiree']->getLieuID(),$_SESSION['soiree']->getHoraire(),$_SESSION['soiree']->getThematique(),$_SESSION['soiree']->getTarifs(),$_SESSION['soiree']->getNom());
+                    //mise à jour de la soirée en session
+                    $soiree = $r->getSoireeByID($_POST['soiree']);
+                    $so = new Soiree($soiree['SoireeID'],$soiree['DateSoiree'],$soiree['LieuID'],$soiree['horaire'],$soiree['thematique'],$soiree['tarifs'],$soiree['nomSoiree']);
+                    $sp = $r->getSpectacleByID($_POST['spectacle']);
+                    $so -> addSpectacle($sp);
+
                     $_SESSION['soiree'] = serialize($so);
 
                 }
