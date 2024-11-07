@@ -14,6 +14,7 @@ use iutnc\nrv\action\DisplaySpectacleAction;
 use iutnc\nrv\action\DisplayProgrammeAction;
 use iutnc\nrv\action\DisplaySpectacleDetailAction;
 use iutnc\nrv\action\SignInAction;
+use iutnc\nrv\action\UpdateSpectacleAction;
 
 class Dispatcher
 {
@@ -27,6 +28,10 @@ class Dispatcher
     public function run()
     {
         switch ($this->action) {
+            case 'update-spectacle':
+                $action = new UpdateSpectacleAction();
+                $html = $action->execute();
+                break;
             case 'add-spec-to-soiree':
                 $action = new AddSpectacleToSoireeAction();
                 $html = $action->execute();
@@ -98,6 +103,7 @@ class Dispatcher
     <li><a href="?action=soiree">Soirée</a></li>
     <li><a href="?action=spectacle-detail">Spectacle en session</a></li>
     <li><a href="?action=add-spectacle">Ajouter un spectacle</a></li>
+    <li><a href="?action=update-spectacle">Editer le spectacle en session</a></li>
     <li><a href="?action=programme">Programme</a></li>
     <li><a href="?action=signin">Se connecter</a></li>
     </ul>

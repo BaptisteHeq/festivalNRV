@@ -42,5 +42,5 @@ replay_pid*
 vendor/
 composer.lock
 
-
+db.config.ini
 
