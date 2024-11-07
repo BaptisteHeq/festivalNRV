@@ -5,6 +5,7 @@ namespace iutnc\nrv\repository;
 use Exception;
 use iutnc\nrv\evenement\spectacle\Spectacle;
 use PDO;
+use PDOException;
 
 
 class NrvRepository
@@ -294,6 +295,43 @@ class NrvRepository
         $stmt->execute(['role' => $role, 'id' => $id]);
     }
 
+    public function rechercherSpectacles(string $nomSp): array
+    {
+        try {
+            $sql = "SELECT * FROM spectacles WHERE nomSpectacle LIKE :nom";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute(['nom' => '%' . $nomSp . '%']);
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            if (empty($rows)) {
+                throw new Exception("Aucun spectacle trouvé avec le terme '$nomSp'");
+            }
+
+            $spectacles = [];
+            foreach ($rows as $row) {
+                $spectacles[] = new Spectacle(
+                    $row['NomSpectacle'],
+                    $row['DateSpectacle'],
+                    $row['StyleID'],
+                    $row['horaire'],
+                    $row['image'],
+                    $row['description'],
+                    $row['video'],
+                    $row['artistes'],
+                    $row['duree']
+                );
+            }
+
+            return $spectacles;
+        }
+        catch (PDOException $e) {
+            error_log("Erreur PDO lors de la recherche de spectacles : " . $e->getMessage());
+            return [];
+        } catch (Exception $e) {
+            error_log("Erreur dans la recherche des spectacles : " . $e->getMessage());
+            return [];
+        }
+    }
 }
 
 

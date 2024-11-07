@@ -16,6 +16,7 @@ use iutnc\nrv\action\DisplaySpectacleAction;
 use iutnc\nrv\action\DisplayProgrammeAction;
 use iutnc\nrv\action\DisplaySpectacleDetailAction;
 use iutnc\nrv\action\RegisterAction;
+use iutnc\nrv\action\SearchAction;
 use iutnc\nrv\action\SignOutAction;
 
 use iutnc\nrv\action\SignInAction;
@@ -101,6 +102,11 @@ class Dispatcher
                 $action = new UpdateRoleAction();
                 $html = $action->execute();
                 break;
+            case 'search':
+                $nom = isset($_POST['NomSp']) ? $_POST['NomSp'] : '';
+                $action = new SearchAction($nom);
+                $html = $action->execute();
+                break;
             default:
                 $action = new DefaultAction();
                 $html = $action->execute();
@@ -151,6 +157,11 @@ class Dispatcher
     <li><a href="?action=display_spectacle">Liste des spectacles</a></li>
     <li><a href="?action=update-role">Mettre à jour le role d'un utilisateur</a></li>
     </ul>
+    <form action="?action=search" method="post" style="float: right; margin-top: -250px; margin-right: 200px;">
+    <input type="text" name="NomSp" placeholder="Recherche..." required>
+    <button type="submit">Rechercher</button>
+    </form>
+
     </header>
     
     <main>
