@@ -63,7 +63,7 @@ class NrvRepository
     }
 
     /* la liste des spectacles */
-    public function getSpectaclesByID(int $soireeID): array
+    public function getSpectaclesByIDsoiree(int $soireeID): array
     {
         $sql = "SELECT * FROM spectacles WHERE soireeID = :soireeID";
         $stmt = $this->pdo->prepare($sql);

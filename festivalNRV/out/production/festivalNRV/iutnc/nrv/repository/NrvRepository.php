@@ -4,6 +4,7 @@ namespace iutnc\nrv\repository;
 
 use Exception;
 use PDO;
+use iutnc\nrv\evenement\spectacle\Spectacle;
 
 class NrvRepository
 {
@@ -43,16 +44,6 @@ class NrvRepository
     }
 
 
-    /*
-    exemple
-    public function getListPlaylist(): array
-    {
-        $sql = "SELECT * FROM playlist";
-        $stmt = $this->pdo->query($sql);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    */
 
     public function getStylesByID(int $styleID): string
     {
@@ -71,7 +62,7 @@ class NrvRepository
     }
 
     /* la liste des spectacles */
-    public function getSpectaclesByID(int $soireeID): array
+    public function getSpectaclesByIDsoiree(int $soireeID): array
     {
         $sql = "SELECT * FROM spectacles WHERE soireeID = :soireeID";
         $stmt = $this->pdo->prepare($sql);
@@ -206,6 +197,37 @@ class NrvRepository
         $stmt = $this->pdo->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    /* update spectacle (pas img/vid)*/
+    public function updateSpectacle(int $spectacleID, string $nom, string $date, int $styleID, string $horaire, string $description, string $artistes, int $duree): void
+    {
+        $sql = "UPDATE spectacles SET NomSpectacle = :nom, DateSpectacle = :date, StyleID = :styleID, horaire = :horaire, description = :description, artistes = :artistes, duree = :duree WHERE SpectacleID = :spectacleID";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([ 'nom' => $nom, 'date' => $date, 'styleID' => $styleID, 'horaire' => $horaire, 'description' => $description, 'artistes' => $artistes, 'duree' => $duree, 'spectacleID' => $spectacleID]);
+    }
+
+    public function getIdSpectacle(string $nom, string $date, string $horaire): int
+    {
+        $sql = "SELECT SpectacleID FROM spectacles WHERE NomSpectacle = :nom AND DateSpectacle = :date AND horaire = :horaire";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['nom' => $nom, 'date' => $date, 'horaire' => $horaire]);
+        return $stmt->fetchColumn();
+    }
+
+    /* fonction qui cherche un spectacle par son ID, le construit et le renvoie*/
+    public function getSpectacleByID(int $spectacleID): Spectacle{
+        $sql = "SELECT * FROM spectacles WHERE SpectacleID = :spectacleID";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['spectacleID' => $spectacleID]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($row === false) {
+            throw new Exception("Spectacle non trouvé à l'id $spectacleID");
+        }
+        return new Spectacle($row['NomSpectacle'], $row['DateSpectacle'], $row['StyleID'], $row['horaire'], $row['image'], $row['description'], $row['video'], $row['artistes'], $row['duree']);
+    }
+
+
+
 
 
 
