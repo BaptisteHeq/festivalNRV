@@ -37,7 +37,7 @@ replay_pid*
 /dataSources.local.xml
 
 # Ignorer les fichiers de sortie ou de compilation
-/out
+out/
 
 vendor/
 composer.lock
