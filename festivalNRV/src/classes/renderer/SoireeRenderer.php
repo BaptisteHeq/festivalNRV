@@ -24,7 +24,7 @@ tarifs, ainsi que la liste des spectacles : titre, artistes, description, style 
 
         $html = "";
         if ($selector == Renderer::COMPACT) {
-            $html .= '<p><b>' . $this->soiree->getNom() . '</b></p>';
+            $html .= '<p><h3>' . $this->soiree->getNom() . '</h3></p>';
             $html .= '<p>Thématique: ' . $this->soiree->getThematique() . '</p>';
             $html .= '<p>Date: ' . $this->soiree->getDate() . '</p>';
             $html .= '<p>Horaire: ' . $this->soiree->getHoraire() . '</p>';
@@ -35,11 +35,8 @@ tarifs, ainsi que la liste des spectacles : titre, artistes, description, style 
             /*En cliquant sur un spectacle dans la liste, le détail de la soirée correspondante est affiché, */
             foreach ($this->soiree->getSpectacles() as $spectacle) {
                 $html .= '<a href="?action=spectacle-detail">';
-                $html .= '<li>' . $spectacle->getNom() . '</li>';
-                $html .= '<p>Artistes: ' . $spectacle->getArtistes() . '</p>';
-                $html .= '<p>Description: ' . $spectacle->getDescription() . '</p>';
-                $html .= '<p>Style: ' . $spectacle->getStyle() . '</p>';
-                $html .= '<p><video controls><source src="./media/' . $spectacle->getVideo() . '" type="video/mp4"></video></p>';
+                $re = new SpectacleRenderer($spectacle);
+                $html .= '<li>' . $re->render(Renderer::COMPACT) . '</li>';
                 $html .= '</a>';
             }
 

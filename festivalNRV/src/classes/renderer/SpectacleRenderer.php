@@ -35,7 +35,12 @@ class SpectacleRenderer implements Renderer
 
         }
         //ajouter lien pour supprimer spectacle
-        $html .= '<a href="index.php?action=delete-spectacle">Supprimer spectacle</a>';
+        $html .= '<ul>';
+        $html .= '<li><a href="index.php?action=delete-spectacle">Supprimer spectacle</a></li>';
+        $html .= '<li><a href="index.php?action=update-spectacle">Modifier spectacle</a></li>';
+        $html .= '<li><a href="index.php?action=add-spec-to-soiree">Ajouter spectacle à une soirée</a></li>';
+        $html .= '<li><a href="index.php?action=delete-spectacle-to-soiree">Supprimer le spectacle de la soirée</a></li>';
+        $html .= '</ul>';
         return $html;
     }
 }

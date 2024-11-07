@@ -10,6 +10,7 @@ use iutnc\nrv\action\DefaultAction;
 use iutnc\nrv\action\AddSpectacleAction;
 use iutnc\nrv\action\DeleteSoireeAction;
 use iutnc\nrv\action\DeleteSpectacleAction;
+use iutnc\nrv\action\DeleteSpectacleToSoireeAction;
 use iutnc\nrv\action\DisplaySoireeAction;
 use iutnc\nrv\action\DisplaySpectacleAction;
 use iutnc\nrv\action\DisplayProgrammeAction;
@@ -31,6 +32,10 @@ class Dispatcher
     public function run()
     {
         switch ($this->action) {
+            case 'delete-spectacle-to-soiree':
+                $action = new DeleteSpectacleToSoireeAction();
+                $html = $action->execute();
+                break;
             case 'update-spectacle':
                 $action = new UpdateSpectacleAction();
                 $html = $action->execute();

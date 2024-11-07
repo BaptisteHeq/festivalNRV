@@ -5,6 +5,7 @@ namespace iutnc\nrv\action;
 use iutnc\nrv\evenement\soiree\Soiree;
 use iutnc\nrv\evenement\spectacle\Spectacle;
 use iutnc\nrv\renderer\Renderer;
+use iutnc\nrv\renderer\SoireeRenderer;
 use iutnc\nrv\renderer\SpectacleRenderer;
 use iutnc\nrv\repository\NrvRepository;
 
@@ -25,16 +26,14 @@ class DisplayProgrammeAction extends Action
         foreach ($soirees as $s){
 
             $soiree= new Soiree($s['SoireeID'],$s['DateSoiree'],$s['LieuID'],$s['horaire'],$s['thematique'],$s['tarifs'],$s['nomSoiree']);
-            $html .= '<h1>Soirée : ' . $soiree->getNom() . '</h1>';
-            $html .= '<h2> Le ' . $soiree->getDate() . '</h2>';
-            $html .= '<p> à ' . $r->getLieuByID($soiree->getLieuID()) . '</p>';
-            $html .= '<p>Spectacles : </p>';
+            //ajout des spectacles
             $spectacles = $r->getSpectaclesByIDsoiree($soiree->getSoireeID());
-            foreach ($spectacles as $spectacle){
-                $sp = new Spectacle($spectacle['NomSpectacle'],$spectacle['DateSpectacle'],$spectacle['StyleID'],$spectacle['horaire'],$spectacle['image'],$spectacle['description'],$spectacle['video'],$spectacle['artistes'],$spectacle['duree']);
-                $re = new SpectacleRenderer($sp);
-                $html .= $re->render(Renderer::COMPACT);
+            foreach ($spectacles as $sp){
+                $spectacle = new Spectacle($sp['SpectacleID'],$sp['DateSpectacle'],$sp['StyleID'],$sp['horaire'],$sp['image'],$sp['description'],$sp['video'],$sp['artistes'],$sp['duree']);
+                $soiree->addSpectacle($spectacle);
             }
+            $re = new SoireeRenderer($soiree);
+            $html .= $re->render(Renderer::COMPACT);
         }
         return $html;
     }

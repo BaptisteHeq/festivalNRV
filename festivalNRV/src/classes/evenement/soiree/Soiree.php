@@ -34,6 +34,15 @@ class Soiree
         $this->spectacles[] = $spectacle;
     }
 
+    //supprimer spectacle
+    public function deleteSpectacle(Spectacle $spectacle): void
+    {
+        $key = array_search($spectacle, $this->spectacles);
+        if ($key !== false) {
+            unset($this->spectacles[$key]);
+        }
+    }
+
     public function getSoireeID(): int
     {
         return $this->soireeID;
@@ -79,6 +88,12 @@ class Soiree
     public function getLieuID(): int
     {
         return $this->lieuID;
+    }
+
+    //supprimer tous les spectacles
+    public function deleteAllSpectacles(): void
+    {
+        $this->spectacles = [];
     }
 
 
