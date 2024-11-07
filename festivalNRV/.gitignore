@@ -38,6 +38,7 @@ replay_pid*
 
 # Ignorer les fichiers de sortie ou de compilation
 /out
+/media/
 
 vendor/
 composer.lock
