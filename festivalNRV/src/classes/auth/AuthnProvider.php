@@ -5,22 +5,22 @@ declare(strict_types=1);
 namespace iutnc\nrv\auth;
 
 use iutnc\nrv\exception\AuthnException;
-use PDO;
-use PDOException;
+use iutnc\nrv\repository\NrvRepository;
 
 class AuthnProvider{
-    public static function signin(string $nom, string $email): bool{
-        $db = new PDO('mysql:host=localhost;dbname=nrv', 'root', '');
-        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $query = $db->prepare('SELECT * FROM utilisateurs WHERE nomutilisateur = :nom');
-        $query->execute(['nom' => $nom]);
-        $user = $query->fetch();
-        if($user === false){
+    public static function signin(string $email, string $password): bool{
+        $r = NrvRepository::getInstance();
+        $hash = $r->getHashUser($email);
+
+        /* verifier si pas null*/
+        if($hash === null){
             throw new AuthnException('Utilisateur inconnu');
         }
-        if($_SESSION['emailutilisateur'] = $email){
+
+        if (password_verify($password, $hash)) {
+            $_SESSION['email'] = $email;
             return true;
         }
-        throw new AuthnException('Email incorrect');
+        return false;
     }
 }

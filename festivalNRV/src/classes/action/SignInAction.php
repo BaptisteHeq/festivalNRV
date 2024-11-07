@@ -15,19 +15,19 @@ class SignInAction extends Action
             $html .= <<<HTML
             <h2>Connexion</h2>
             <form method="post" action="?action=signin">
-                <label for="nom">Nom</label>
-                <input type="text" id="nom" name="nom" required> <br>
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" required> <br>
+                <label>Email</label>
+                <input type="email" name="email" required> <br>
+                <label>Mot de passe</label>
+                <input type="password" name="password" required> <br>
                 <input type="submit" value="Se connecter">
             </form>
             HTML;
         }elseif($_SERVER['REQUEST_METHOD'] === 'POST'){
-            $nom = filter_var($_POST['nom'], FILTER_SANITIZE_STRING);
             $email = filter_var($_POST['email'], FILTER_SANITIZE_STRING);
+            $password = filter_var($_POST['password'], FILTER_SANITIZE_STRING);
             try{
-                AuthnProvider::signin($nom, $email);
-                header('Location: index.php');
+                AuthnProvider::signin($email, $password);
+                
                 $html .= '<p>Connexion réussie</p>';
             }catch(AuthnException $e){
                 $html .= $e->getMessage();

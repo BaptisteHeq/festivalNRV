@@ -246,10 +246,13 @@ class NrvRepository
         return new Spectacle($row['NomSpectacle'], $row['DateSpectacle'], $row['StyleID'], $row['horaire'], $row['image'], $row['description'], $row['video'], $row['artistes'], $row['duree']);
     }
 
-
-
-
-
+    public function getHashUser(string $email): String
+    {
+        $sql = "SELECT password FROM Utilisateurs WHERE EmailUtilisateur = :email";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['email' => $email]);
+        return $stmt->fetch(PDO::FETCH_ASSOC)['password'];
+    }
 
 }
 
