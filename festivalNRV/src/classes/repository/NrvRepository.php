@@ -3,6 +3,7 @@
 namespace iutnc\nrv\repository;
 
 use Exception;
+use iutnc\nrv\evenement\spectacle\Spectacle;
 use PDO;
 
 class NrvRepository
@@ -184,12 +185,31 @@ class NrvRepository
         $stmt->execute(['soireeID' => $soireeID, 'spectacleID' => $spectacleID]);
     }
 
-    public function getSpectacles()
+    public function getSpectacles(): array
     {
         $sql = "SELECT * FROM spectacles";
         $stmt = $this->pdo->query($sql);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $spectacles = [];
+        foreach ($result as $row) {
+            $spectacles[] = new Spectacle(
+                $row['NomSpectacle'],
+                $row['DateSpectacle'],
+                $row['StyleID'],
+                $row['horaire'],
+                $row['image'],
+                $row['description'],
+                $row['video'],
+                $row['artistes'],
+                $row['duree']
+            );
+        }
+
+        return $spectacles;
     }
+
+
 
     public function getSoireeByID(int $soireeID) : array
     {
