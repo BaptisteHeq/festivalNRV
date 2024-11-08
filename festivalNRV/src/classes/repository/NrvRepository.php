@@ -82,17 +82,22 @@ class NrvRepository
         $liste= $stmt->fetchAll(PDO::FETCH_ASSOC);
         $spectacles = [];
         foreach ($liste as $sp){
-            $images = [];
+            $media = [];
             $sql = "SELECT cheminFichier FROM media WHERE mediaID IN (SELECT mediaID FROM spectacle_media WHERE spectacleID = :spectacleID)";
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute(['spectacleID' => $sp['spectacleID']]);
-            $images = $stmt->fetchAll(PDO::FETCH_COLUMN);
+            $media = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
+            //tri des images et vidéos
+            $images = [];
             $videos = [];
-            $sql = "SELECT cheminFichier FROM media WHERE mediaID IN (SELECT mediaID FROM spectacle_media WHERE spectacleID = :spectacleID)";
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->execute(['spectacleID' => $sp['spectacleID']]);
-            $videos = $stmt->fetchAll(PDO::FETCH_COLUMN);
+            foreach ($media as $m){
+                if (strpos($m, 'mp4') !== false){
+                    $videos[] = $m;
+                } else {
+                    $images[] = $m;
+                }
+            }
 
             $artistes = [];
             $sql = "SELECT nomArtiste FROM artiste WHERE artisteID IN (SELECT artisteID FROM spectacle_artiste WHERE spectacleID = :spectacleID)";
@@ -127,42 +132,45 @@ class NrvRepository
         $stmt->execute([ 'nom' => $nom, 'styleID' => $styleID, 'date' => $date, 'estAnnule' => $estAnnule, 'horaire' => $horaire, 'duree' => $duree, 'description' => $description]);
         $spectacleID = $this->pdo->lastInsertId();
 
-        //ajouter les images (Media(mediaID, cheminFichier))
-        $sql = "INSERT INTO media(cheminFichier) VALUES (:cheminFichier)";
-        $stmt = $this->pdo->prepare($sql);
-        foreach ($img as $i){
+
+        // Ajouter les images
+        foreach ($img as $i) {
+            $sql = "INSERT INTO media(cheminFichier) VALUES (:cheminFichier)";
+            $stmt = $this->pdo->prepare($sql);
             $stmt->execute(['cheminFichier' => $i]);
             $mediaID = $this->pdo->lastInsertId();
-            //ajouter les images du spectacle (spectacle_media(spectacleID, mediaID))
+
+            // Associer l'image au spectacle
             $sql = "INSERT INTO spectacle_media(spectacleID, mediaID) VALUES (:spectacleID, :mediaID)";
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute(['spectacleID' => $spectacleID, 'mediaID' => $mediaID]);
         }
 
-        //ajouter les videos (Media(mediaID, cheminFichier))
-        $sql = "INSERT INTO media(cheminFichier) VALUES (:cheminFichier)";
-        $stmt = $this->pdo->prepare($sql);
-        foreach ($video as $v){
+        // Ajouter les vidéos
+        foreach ($video as $v) {
+            $sql = "INSERT INTO media(cheminFichier) VALUES (:cheminFichier)";
+            $stmt = $this->pdo->prepare($sql);
             $stmt->execute(['cheminFichier' => $v]);
             $mediaID = $this->pdo->lastInsertId();
-            //ajouter les videos du spectacle (spectacle_media(spectacleID, mediaID))
+
+            // Associer la vidéo au spectacle
             $sql = "INSERT INTO spectacle_media(spectacleID, mediaID) VALUES (:spectacleID, :mediaID)";
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute(['spectacleID' => $spectacleID, 'mediaID' => $mediaID]);
         }
 
-        //ajouter les artistes (Artiste(artisteID, nomArtiste))
-        $sql = "INSERT INTO artiste(nomArtiste) VALUES (:nomArtiste)";
-        $stmt = $this->pdo->prepare($sql);
-        foreach ($artistes as $a){
+        // Ajouter les artistes
+        foreach ($artistes as $a) {
+            $sql = "INSERT INTO artiste(nomArtiste) VALUES (:nomArtiste)";
+            $stmt = $this->pdo->prepare($sql);
             $stmt->execute(['nomArtiste' => $a]);
             $artisteID = $this->pdo->lastInsertId();
-            //ajouter les artistes du spectacle (spectacle_artiste(spectacleID, artisteID))
+
+            // Associer l'artiste au spectacle
             $sql = "INSERT INTO spectacle_artiste(spectacleID, artisteID) VALUES (:spectacleID, :artisteID)";
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute(['spectacleID' => $spectacleID, 'artisteID' => $artisteID]);
         }
-
         return $spectacleID;
 
     }
@@ -170,31 +178,59 @@ class NrvRepository
     /*supprimer un spectacle */
     public function deleteSpectacle(int $spectacleID): void
     {
-        //supprimer les fichier image et video
-        $sql = "SELECT image, video FROM spectacles WHERE SpectacleID = :spectacleID";
+        //supprimer les fichiers dans le dossier media
+        $sql = "SELECT cheminFichier FROM media WHERE mediaID IN (SELECT mediaID FROM spectacle_media WHERE spectacleID = :spectacleID)";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['spectacleID' => $spectacleID]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        if (is_file('./media/'.$row['image']))
-        unlink('./media/'.$row['image']);
-        if (is_file('./media/'.$row['video']))
-        unlink('./media/'.$row['video']);
+        $files = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        foreach ($files as $f){
+            unlink($f);
+        }
+        //stocker les id des médias
+        $sql = "SELECT mediaID FROM spectacle_media WHERE spectacleID = :spectacleID";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['spectacleID' => $spectacleID]);
+        $mediaIDs = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
-        //supprimer les spectacles de la soirée
-        $sql = "DELETE FROM soirees_spectacles WHERE SpectacleID = :spectacleID";
+        //supprimer les liens entre spectacle et médias
+        $sql = "DELETE FROM spectacle_media WHERE spectacleID = :spectacleID";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['spectacleID' => $spectacleID]);
+
+        //supprimer les médias
+        $sql = "DELETE FROM media WHERE mediaID IN (:mediaIDs)";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['mediaIDs' => $mediaIDs]);
+
+
+
+        //stocker les id des artistes
+        $sql = "SELECT artisteID FROM spectacle_artiste WHERE spectacleID = :spectacleID";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['spectacleID' => $spectacleID]);
+        $artisteIDs = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+        //supprimer les liens entre spectacle et artistes
+        $sql = "DELETE FROM spectacle_artiste WHERE spectacleID = :spectacleID";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['spectacleID' => $spectacleID]);
+
+        //supprimer les artistes
+        $sql = "DELETE FROM artiste WHERE artisteID IN (:artisteIDs)";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['artisteIDs' => $artisteIDs]);
 
         //supprimer le spectacle
-        $sql = "DELETE FROM spectacles WHERE SpectacleID = :spectacleID";
+        $sql = "DELETE FROM spectacle WHERE spectacleID = :spectacleID";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['spectacleID' => $spectacleID]);
+
     }
 
     /*ajouter une soirée */
     public function addSoiree(string $date, int $lieuID, string $horaire, string $thematique, float $tarifs, string $nomSoiree): int
     {
-        $sql = "INSERT INTO soirees(DateSoiree, LieuID, horaire, thematique, tarifs,nomSoiree) VALUES ( :date, :lieuID, :horaire, :thematique, :tarifs, :nomSoiree)";
+        $sql = "INSERT INTO soiree(DateSoiree, LieuID, horaire, thematique, tarifs,nomSoiree) VALUES ( :date, :lieuID, :horaire, :thematique, :tarifs, :nomSoiree)";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([ 'date' => $date, 'lieuID' => $lieuID, 'horaire' => $horaire, 'thematique' => $thematique, 'tarifs' => $tarifs, 'nomSoiree' => $nomSoiree]);
         return $this->pdo->lastInsertId();
@@ -204,7 +240,7 @@ class NrvRepository
     public function deleteSoiree(int $soireeID): void
     {
         //select les spectacles de la soirée
-        $sql = "SELECT SpectacleID FROM spectacles WHERE SoireeID = :soireeID";
+        $sql = "SELECT SpectacleID FROM spectacle WHERE SoireeID = :soireeID";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['soireeID' => $soireeID]);
         $spectacles = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -217,7 +253,7 @@ class NrvRepository
 
 
         //supprimer la soirée
-        $sql = "DELETE FROM soirees WHERE SoireeID = :soireeID";
+        $sql = "DELETE FROM soiree WHERE SoireeID = :soireeID";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['soireeID' => $soireeID]);
     }
@@ -225,7 +261,7 @@ class NrvRepository
     //getLieux
     public function getLieux(): array
     {
-        $sql = "SELECT * FROM lieux";
+        $sql = "SELECT * FROM lieu";
         $stmt = $this->pdo->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -233,11 +269,11 @@ class NrvRepository
     //ajouter Spectacle à une soirée
     public function addSpectacleToSoiree(int $soireeID, int $spectacleID): void
     {
-        $sql = "UPDATE spectacles SET SoireeID = :soireeID WHERE SpectacleID = :spectacleID";
+        $sql = "UPDATE spectacle SET SoireeID = :soireeID WHERE SpectacleID = :spectacleID";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['soireeID' => $soireeID, 'spectacleID' => $spectacleID]);
 
-        $sql = "INSERT INTO soirees_spectacles(SoireeID, SpectacleID) VALUES ( :soireeID, :spectacleID)";
+        $sql = "INSERT INTO soiree_spectacle(SoireeID, SpectacleID) VALUES ( :soireeID, :spectacleID)";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['soireeID' => $soireeID, 'spectacleID' => $spectacleID]);
     }
@@ -245,34 +281,50 @@ class NrvRepository
     //supprimer Spectacle d'une soirée
     public function deleteSpectacleFromSoiree(int $soireeID, int $spectacleID): void
     {
-        $sql = "UPDATE spectacles SET SoireeID = NULL WHERE SpectacleID = :spectacleID";
+        $sql = "UPDATE spectacle SET SoireeID = NULL WHERE SpectacleID = :spectacleID";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['spectacleID' => $spectacleID]);
 
-        $sql = "DELETE FROM soirees_spectacles WHERE SoireeID = :soireeID AND SpectacleID = :spectacleID";
+        $sql = "DELETE FROM soiree_spectacle WHERE SoireeID = :soireeID AND SpectacleID = :spectacleID";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['soireeID' => $soireeID, 'spectacleID' => $spectacleID]);
     }
 
     public function getSpectacles(): array
     {
-        $sql = "SELECT * FROM spectacles";
+        $sql = "SELECT * FROM spectacle";
         $stmt = $this->pdo->query($sql);
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
+        $liste = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $spectacles = [];
-        foreach ($result as $row) {
-            $spectacles[] = new Spectacle(
-                $row['NomSpectacle'],
-                $row['DateSpectacle'],
-                $row['StyleID'],
-                $row['horaire'],
-                $row['image'],
-                $row['description'],
-                $row['video'],
-                $row['artistes'],
-                $row['duree']
-            );
+        foreach ($liste as $sp){
+            $media = [];
+            $sql = "SELECT cheminFichier FROM media WHERE mediaID IN (SELECT mediaID FROM spectacle_media WHERE spectacleID = :spectacleID)";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute(['spectacleID' => $sp['spectacleID']]);
+            $media = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+            //tri des images et vidéos
+            $images = [];
+            $videos = [];
+            foreach ($media as $m){
+                if (strpos($m, 'mp4') !== false){
+                    $videos[] = $m;
+                } else {
+                    $images[] = $m;
+                }
+            }
+
+
+
+            $artistes = [];
+            $sql = "SELECT nomArtiste FROM artiste WHERE artisteID IN (SELECT artisteID FROM spectacle_artiste WHERE spectacleID = :spectacleID)";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute(['spectacleID' => $sp['spectacleID']]);
+            $artistes = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+            $spectacle = new Spectacle($sp['nomSpectacle'], $sp['dateSpectacle'], $sp['styleID'], $sp['horaire'], $images, $sp['description'], $videos, $artistes, $sp['duree']);
+            $spectacle->setSpectacleID($sp['spectacleID']);
+            $spectacles[] = $spectacle;
         }
 
         return $spectacles;
@@ -282,7 +334,7 @@ class NrvRepository
 
     public function getSoireeByID(int $soireeID) : array
     {
-        $sql = "SELECT * FROM soirees WHERE SoireeID = :soireeID";
+        $sql = "SELECT * FROM soiree WHERE SoireeID = :soireeID";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['soireeID' => $soireeID]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -291,7 +343,7 @@ class NrvRepository
     /* get Spectacle sans soiree */
     public function getSpectaclesSansSoiree()
     {
-        $sql = "SELECT * FROM spectacles WHERE SoireeID IS NULL";
+        $sql = "SELECT * FROM spectacle WHERE SoireeID IS NULL";
         $stmt = $this->pdo->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -299,14 +351,14 @@ class NrvRepository
     /* update spectacle (pas img/vid)*/
     public function updateSpectacle(int $spectacleID, string $nom, string $date, int $styleID, string $horaire, string $description, string $artistes, int $duree): void
     {
-        $sql = "UPDATE spectacles SET NomSpectacle = :nom, DateSpectacle = :date, StyleID = :styleID, horaire = :horaire, description = :description, artistes = :artistes, duree = :duree WHERE SpectacleID = :spectacleID";
+        $sql = "UPDATE spectacle SET NomSpectacle = :nom, DateSpectacle = :date, StyleID = :styleID, horaire = :horaire, description = :description, artistes = :artistes, duree = :duree WHERE SpectacleID = :spectacleID";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([ 'nom' => $nom, 'date' => $date, 'styleID' => $styleID, 'horaire' => $horaire, 'description' => $description, 'artistes' => $artistes, 'duree' => $duree, 'spectacleID' => $spectacleID]);
     }
 
     public function getIdSpectacle(string $nom, string $date, string $horaire): int
     {
-        $sql = "SELECT SpectacleID FROM spectacles WHERE NomSpectacle = :nom AND DateSpectacle = :date AND horaire = :horaire";
+        $sql = "SELECT SpectacleID FROM spectacle WHERE NomSpectacle = :nom AND DateSpectacle = :date AND horaire = :horaire";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['nom' => $nom, 'date' => $date, 'horaire' => $horaire]);
         return $stmt->fetchColumn();
@@ -314,7 +366,7 @@ class NrvRepository
 
     /* fonction qui cherche un spectacle par son ID, le construit et le renvoie*/
     public function getSpectacleByID(int $spectacleID): Spectacle{
-        $sql = "SELECT * FROM spectacles WHERE SpectacleID = :spectacleID";
+        $sql = "SELECT * FROM spectacle WHERE SpectacleID = :spectacleID";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['spectacleID' => $spectacleID]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -326,7 +378,7 @@ class NrvRepository
 
     public function getHashUser(string $email): ?String
     {
-        $sql = "SELECT password FROM Utilisateurs WHERE EmailUtilisateur = :email";
+        $sql = "SELECT password FROM utilisateur WHERE email = :email";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['email' => $email]);
         if($stmt->rowCount() == 0){
@@ -337,14 +389,14 @@ class NrvRepository
 
     public function addUser(string $nom, string $email, string $hash): void
     {
-        $sql = "INSERT INTO Utilisateurs(NomUtilisateur, EmailUtilisateur, password, role) VALUES ( :nom, :email, :hash, 1)";
+        $sql = "INSERT INTO utilisateur(nom, email, password, role) VALUES ( :nom, :email, :hash, 1)";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([ 'nom' => $nom, 'email' => $email, 'hash' => $hash]);
     }
 
     public function getNomUser(string $email): string
     {
-        $sql = "SELECT NomUtilisateur FROM Utilisateurs WHERE EmailUtilisateur = :email";
+        $sql = "SELECT nom FROM utilisateur WHERE email = :email";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['email' => $email]);
         return $stmt->fetchColumn();
@@ -352,7 +404,7 @@ class NrvRepository
 
     public function getRoleUser(string $email): int
     {
-        $sql = "SELECT role FROM Utilisateurs WHERE EmailUtilisateur = :email";
+        $sql = "SELECT role FROM utilisateur WHERE email = :email";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['email' => $email]);
         return $stmt->fetchColumn();
@@ -360,14 +412,14 @@ class NrvRepository
 
     public function getLstUsers(): array
     {
-        $sql = "SELECT * FROM Utilisateurs";
+        $sql = "SELECT * FROM utilisateur";
         $stmt = $this->pdo->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function updateRole(int $id, int $role): void
     {
-        $sql = "UPDATE Utilisateurs SET role = :role WHERE UtilisateurID = :id";
+        $sql = "UPDATE utilisateur SET role = :role WHERE id = :id";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['role' => $role, 'id' => $id]);
     }
@@ -375,7 +427,7 @@ class NrvRepository
     public function rechercherSpectacles(string $nomSp): array
     {
         try {
-            $sql = "SELECT * FROM spectacles WHERE nomSpectacle LIKE :nom";
+            $sql = "SELECT * FROM spectacle WHERE nomSpectacle LIKE :nom";
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute(['nom' => '%' . $nomSp . '%']);
             $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -408,6 +460,13 @@ class NrvRepository
             error_log("Erreur dans la recherche des spectacles : " . $e->getMessage());
             return [];
         }
+    }
+
+    public function getStyles()
+    {
+        $sql = "SELECT * FROM style";
+        $stmt = $this->pdo->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
 
