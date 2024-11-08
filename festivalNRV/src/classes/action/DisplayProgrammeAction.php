@@ -30,14 +30,12 @@ class DisplayProgrammeAction extends Action
         $html .= '<p><b>Affichage des soirees</b></p><br>';
         foreach ($soirees as $s){
 
-            $soiree= new Soiree($s['SoireeID'],$s['DateSoiree'],$s['LieuID'],$s['horaire'],$s['thematique'],$s['tarifs'],$s['nomSoiree']);
             //ajout des spectacles
-            $spectacles = $r->getSpectaclesByIDsoiree($soiree->getSoireeID());
+            $spectacles = $r->getSpectaclesByIDsoiree($s->getSoireeID());
             foreach ($spectacles as $sp){
-                $spectacle = new Spectacle($sp['SpectacleID'],$sp['DateSpectacle'],$sp['StyleID'],$sp['horaire'],$sp['image'],$sp['description'],$sp['video'],$sp['artistes'],$sp['duree']);
-                $soiree->addSpectacle($spectacle);
+                $s->addSpectacle($sp);
             }
-            $re = new SoireeRenderer($soiree);
+            $re = new SoireeRenderer($s);
             $html .= $re->render(Renderer::COMPACT);
         }
         return $html;

@@ -14,13 +14,13 @@ class Spectacle
     private int $soireeID;
     private int $styleID;
     private string $horaire="";
-    private string $img="";
+    private array $img=[];
     private string $description="";
-    private string $video="";
-    private string $artistes="";
+    private array $video=[];
+    private array $artistes=[];
     private int $duree=0;
 
-    public function __construct(string $nom, string $date, int $styleID, string $horaire, string $img, string $description, string $video, string $artistes, int $duree)
+    public function __construct(string $nom, string $date, int $styleID, string $horaire, array $img, string $description, array $video, array $artistes, int $duree)
     {
         $this->nom = $nom;
         $this->date = $date;
@@ -82,7 +82,7 @@ class Spectacle
         return $this->horaire;
     }
 
-    public function getImg(): string
+    public function getImg(): array
     {
         return $this->img;
     }
@@ -92,12 +92,12 @@ class Spectacle
         return $this->description;
     }
 
-    public function getArtistes(): string
+    public function getArtistes(): array
     {
         return $this->artistes;
     }
 
-    public function getVideo(): string
+    public function getVideo(): array
     {
         return $this->video;
     }

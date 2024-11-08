@@ -38,8 +38,7 @@ tarifs, ainsi que la liste des spectacles : titre, artistes, description, style 
             $spectacles = $r->getSpectaclesByIDsoiree($this->soiree->getSoireeID());
             foreach ($spectacles as $sp) {
                 $html .= '<a href="?action=spectacle-detail">';
-                $spectacle = new Spectacle($sp['NomSpectacle'], $sp['DateSpectacle'], $sp['StyleID'], $sp['horaire'], $sp['image'], $sp['description'], $sp['video'], $sp['artistes'], $sp['duree']);
-                $re = new SpectacleRenderer($spectacle);
+                $re = new SpectacleRenderer($sp);
                 $html .= '<li>' . $re->render(Renderer::COMPACT) . '</li>';
                 $html .= '</a>';
             }

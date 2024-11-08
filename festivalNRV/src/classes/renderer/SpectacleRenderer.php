@@ -22,16 +22,36 @@ class SpectacleRenderer implements Renderer
             $html .= '<p>Date: ' . $this->spectacle->getDate() . '</p>';
             $html .= '<p>Style: ' . $this->spectacle->getStyle() . '</p>';
             $html .= '<p>Horaire: ' . $this->spectacle->getHoraire() . '</p>';
-            $html .= '<p><img src="./media/' . $this->spectacle->getImg() . '" alt="image spectacle" width="100px"></p>';
+            //afficher les images
+            $html .= '<p>Images: ';
+            foreach ($this->spectacle->getImg() as $img) {
+                $html .= '<img src="./media/' . $img . '" alt="image spectacle" width="100px">';
+            }
+            $html .= '</p>';
         } else if ($selector == Renderer::DETAIL) {
             /*ffichage détaillé d’un spectacle : titre, artistes, description, style, durée, image(s), extrait audio/vidéo*/
             $html .= '<p><b>' . $this->spectacle->getNom() . '</b></p>';
-            $html .= '<p>Artistes: ' . $this->spectacle->getArtistes() . '</p>';
+            //afficher les artistes
+            $html .= '<p>Artistes: ';
+            foreach ($this->spectacle->getArtistes() as $artiste) {
+                $html .= $artiste . ', ';
+            }
+            $html .= '</p>';
             $html .= '<p>Description: ' . $this->spectacle->getDescription() . '</p>';
             $html .= '<p>Style: ' . $this->spectacle->getStyle() . '</p>';
             $html .= '<p>Durée: ' . $this->spectacle->getDuree() . '</p>';
-            $html .= '<p><img src="./media/' . $this->spectacle->getImg() . '" alt="image spectacle" width="100px"></p>';
-            $html .= '<p><video controls><source src="./media/' . $this->spectacle->getVideo() . '" type="video/mp4"></video></p>';
+            //afficher les images
+            $html .= '<p>Images: ';
+            foreach ($this->spectacle->getImg() as $img) {
+                $html .= '<img src="./media/' . $img . '" alt="image spectacle" width="100px">';
+            }
+            $html .= '</p>';
+            //afficher les vidéos
+            $html .= '<p>Vidéos: ';
+            foreach ($this->spectacle->getVideo() as $video) {
+                $html .= '<video controls><source src="./media/' . $video . '" type="video/mp4"></video>';
+            }
+            $html .= '</p>';
 
         }
         //ajouter lien pour supprimer spectacle

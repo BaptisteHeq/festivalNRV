@@ -17,9 +17,8 @@ class Soiree
     private string $nom;
     private array $spectacles=[];
 
-    public function __construct(int $soireeID, string $date, int $lieuID, string $horaire, string $thematique, float $prix, string $nom)
+    public function __construct(string $date, int $lieuID, string $horaire, string $thematique, float $prix, string $nom)
     {
-        $this->soireeID = $soireeID;
         $this->date = $date;
         $this->lieuID = $lieuID;
         $this->horaire = $horaire;
@@ -52,6 +51,12 @@ class Soiree
     public function getSoireeID(): int
     {
         return $this->soireeID;
+    }
+
+    //set soireeID
+    public function setSoireeID(int $soireeID): void
+    {
+        $this->soireeID = $soireeID;
     }
 
     public function getDate(): string
