@@ -20,16 +20,44 @@ class DeleteSpectacleToSoireeAction extends Action
             return "Vous n'êtes pas autorisé à accéder à cette page";
         $html = '<p><b>Suppression du spectacle de la soirée</b></p><br>';
 
-        if (!isset($_SESSION['spectacle']) || !isset($_SESSION['soiree'])) {
-            $html .= 'spectacle introuvable';
-        } else {
-            $sp = unserialize($_SESSION['spectacle']);
-            $soiree = unserialize($_SESSION['soiree']);
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $r = NrvRepository::getInstance();
-            $r->deleteSpectacleFromSoiree( $soiree->getSoireeID(), $sp->getSpectacleID());
-            $_SESSION['soiree'] = serialize($soiree);
-            $html .= 'spectacle supprimé de la soirée';
+            $soirees = $r->getSoirees();
+            $html .= '<form action="?action=delete-spectacle-to-soiree" method="post">';
+            $html .= '<h2>Supprimer un spectacle d\'une soirée</h2>';
+
+            //liste déroulante des spectacles
+            $html .= '<select name="spectacle">';
+
+            $spectacles = $r->getSpectacles();
+            foreach ($spectacles as $spectacle) {
+                $html .= '<option value="' . $spectacle->getSpectacleId() . '">' . $spectacle->getNom() . '</option>';
+            }
+            $html .= '</select>';
+
+
+            //liste déroulante des soirees
+            $html .= '<select name="soiree">';
+            foreach ($soirees as $soiree) {
+                $html .= '<option value="' . $soiree->getSoireeID() . '">' . $soiree->getNom() . '</option>';
+            }
+            $html .= '</select>';
+
+            $html .= '<input type="submit" value="Supprimer">';
+            $html .= '</form>';
+        } elseif ($_SERVER['REQUEST_METHOD'] === 'POST'){
+            if (isset($_POST['spectacle']) && isset($_POST['soiree'])) {
+                $r = NrvRepository::getInstance();
+                if ($r->estSpectacleInSoiree($_POST['spectacle'],$_POST['soiree'])==0) {
+                    $html .= 'Le spectacle n\'est pas dans la soirée';
+                } else {
+                    $r = NrvRepository::getInstance();
+                    $r->deleteSpectacleFromSoiree($_POST['soiree'], $_POST['spectacle']);
+                    $html .= 'Spectacle supprimé de la soirée';
+                }
+            }
         }
+
         return $html;
     }
 }

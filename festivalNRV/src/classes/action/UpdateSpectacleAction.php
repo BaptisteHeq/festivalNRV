@@ -20,7 +20,7 @@ class UpdateSpectacleAction extends Action
         if(!AuthzProvider::isAuthorized($this->role))
             return "Vous n'êtes pas autorisé à accéder à cette page";
 
-        if(!isset($_SESSION['spectacle'])){
+        if(!isset($_GET['idSpectacle'])){
             return "Pas de spectacle en session";
         }
         /* récupération du spectacle */

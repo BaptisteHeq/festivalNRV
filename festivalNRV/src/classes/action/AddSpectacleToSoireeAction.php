@@ -40,7 +40,7 @@ class AddSpectacleToSoireeAction extends Action
                 //liste déroulante des spectacles
                 $html .= '<select name="spectacle">';
                 foreach ($spectacles as $spectacle) {
-                    $html .= '<option value="' . $spectacle['SpectacleID'] . '">' . $spectacle['NomSpectacle'] . '</option>';
+                    $html .= '<option value="' . $spectacle->getSpectacleId() . '">' . $spectacle->getNom() . '</option>';
                 }
                 $html .= '</select>';
 
@@ -48,7 +48,7 @@ class AddSpectacleToSoireeAction extends Action
                 $html .= '<select name="soiree">';
                 $soirees = $r->getSoirees();
                 foreach ($soirees as $soiree) {
-                    $html .= '<option value="' . $soiree['SoireeID'] . '">' . $soiree['nomSoiree'] . '</option>';
+                    $html .= '<option value="' . $soiree->getSoireeID() . '">' . $soiree->getNom() . '</option>';
                 }
                 $html .= '</select>';
 
@@ -63,11 +63,10 @@ class AddSpectacleToSoireeAction extends Action
 
                     //mise à jour de la soirée en session
                     $soiree = $r->getSoireeByID($_POST['soiree']);
-                    $so = new Soiree($soiree['SoireeID'],$soiree['DateSoiree'],$soiree['LieuID'],$soiree['horaire'],$soiree['thematique'],$soiree['tarifs'],$soiree['nomSoiree']);
                     $sp = $r->getSpectacleByID($_POST['spectacle']);
-                    $so -> addSpectacle($sp);
+                    $soiree -> addSpectacle($sp);
 
-                    $_SESSION['soiree'] = serialize($so);
+                    $_SESSION['soiree'] = serialize($soiree);
 
                 }
             }

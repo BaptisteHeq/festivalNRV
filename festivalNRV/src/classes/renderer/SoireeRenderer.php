@@ -37,7 +37,7 @@ tarifs, ainsi que la liste des spectacles : titre, artistes, description, style 
             $r = NrvRepository::getInstance();
             $spectacles = $r->getSpectaclesByIDsoiree($this->soiree->getSoireeID());
             foreach ($spectacles as $sp) {
-                $html .= '<a href="?action=spectacle-detail">';
+                $html .= '<a href="?action=spectacle-detail&idSpectacle=' . $sp->getSpectacleID() . '">';
                 $re = new SpectacleRenderer($sp);
                 $html .= '<li>' . $re->render(Renderer::COMPACT) . '</li>';
                 $html .= '</a>';

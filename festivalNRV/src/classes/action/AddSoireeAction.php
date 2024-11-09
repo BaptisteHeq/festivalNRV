@@ -35,7 +35,7 @@ class AddSoireeAction extends Action
             $r = NrvRepository::getInstance();
             $lieux = $r->getLieux();
             foreach ($lieux as $lieu){
-                $html .= '<option value="' . $lieu['LieuID'] . '">' . $lieu['NomLieu'] . '</option>';
+                $html .= '<option value="' . $lieu['lieuID'] . '">' . $lieu['nomLieu'] . '</option>';
             }
             $html .= '</select>';
             $html .= '<label for="horaire">Horaire de la soirée</label>';
@@ -58,7 +58,8 @@ class AddSoireeAction extends Action
             $r = NrvRepository::getInstance();
             $id = $r->addSoiree($date,$lieu,$horaire,$thematique,$tarifs,$nom);
 
-            $soiree = new Soiree($id,$date,$lieu,$horaire,$thematique,$tarifs,$nom);
+            $soiree = new Soiree($date,$lieu,$horaire,$thematique,$tarifs,$nom);
+            $soiree->setSoireeID($id);
 
             $_SESSION['soiree'] = serialize($soiree);
 

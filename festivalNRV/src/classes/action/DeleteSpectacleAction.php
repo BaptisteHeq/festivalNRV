@@ -22,11 +22,11 @@ class DeleteSpectacleAction extends Action
 
         $html = '<p><b>Suppression du spectacle</b></p><br>';
 
-        if (!isset($_SESSION['spectacle'])) {
+        if (!isset($_GET['idSpectacle'])) {
             $html .= 'spectacle introuvable';
         } else {
-            $sp = unserialize($_SESSION['spectacle']);
             $r = NrvRepository::getInstance();
+            $sp = $r->getSpectacleById($_GET['IdSpectacle']);
             $r->deleteSpectacle($sp->getSpectacleID());
 
 

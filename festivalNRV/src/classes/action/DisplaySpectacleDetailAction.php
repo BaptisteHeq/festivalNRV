@@ -7,6 +7,7 @@ use iutnc\nrv\evenement\programme\Programme;
 use iutnc\nrv\evenement\spectacle\Spectacle;
 use iutnc\nrv\renderer\Renderer;
 use iutnc\nrv\renderer\SpectacleRenderer;
+use iutnc\nrv\repository\NrvRepository;
 
 class DisplaySpectacleDetailAction extends Action
 {
@@ -23,11 +24,12 @@ class DisplaySpectacleDetailAction extends Action
 
         $html = '<p><b>Affichage du spectacle en session</b></p><br>';
 
-        if (! isset($_SESSION['spectacle'])) {
+        if (! isset($_GET['idSpectacle'])) {
             $html .= 'spectacle introuvable';
         } else
         {
-            $pl = unserialize($_SESSION['spectacle']);
+            $r = NrvRepository::getInstance();
+            $pl = $r->getSpectacleById($_GET['idSpectacle']);
             $r = new SpectacleRenderer($pl);
             $html .= $r->render(Renderer::DETAIL);
         }
