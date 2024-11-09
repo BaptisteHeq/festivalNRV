@@ -6,6 +6,9 @@ SAE BUT info S3
 - DIEUDONNE Quentin
 
 Role:
+
 1 : utilisateur
+
 50 : organisateur
+
 100 : administrateur
