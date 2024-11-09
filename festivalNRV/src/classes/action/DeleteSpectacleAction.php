@@ -26,7 +26,7 @@ class DeleteSpectacleAction extends Action
             $html .= 'spectacle introuvable';
         } else {
             $r = NrvRepository::getInstance();
-            $sp = $r->getSpectacleById($_GET['IdSpectacle']);
+            $sp = $r->getSpectacleById($_GET['idSpectacle']);
             $r->deleteSpectacle($sp->getSpectacleID());
 
 

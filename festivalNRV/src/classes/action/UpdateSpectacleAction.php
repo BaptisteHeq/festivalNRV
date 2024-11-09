@@ -35,11 +35,12 @@ class UpdateSpectacleAction extends Action
             $description = $spectacle->getDescription();
             $artiste = $spectacle->getArtistes();
             $duree = $spectacle->getDuree();
+            $idSpectacle = $spectacle->getSpectacleID();
 
 
             $html .= <<<HTML
             <h2>Modifier le spectacle en session</h2>
-            <form method="post" action="?action=update-spectacle" enctype="multipart/form-data">
+            <form method="post" action="?action=update-spectacle&idSpectacle=$idSpectacle" enctype="multipart/form-data">
                 <label for="spectacle_name">Nom du spectacle</label> 
                 <input type="text" id="spectacle_name" name="spectacle_name" value="$nom" required> <br>
                 <label for="spectacle_date" >Date du spectacle</label>
@@ -83,7 +84,7 @@ class UpdateSpectacleAction extends Action
 
             $idspectacle = $r->getIdSpectacle($nom, $date, $horaire);
 
-            $r->updateSpectacle($idspectacle, $spectacle_name, $spectacle_date, $spectacle_style, $spectacle_horaire, $spectacle_description, $spectacle_artistes, $spectacle_duree);
+            $r->updateSpectacle($idspectacle, $spectacle_name, $spectacle_date, $spectacle_style, $spectacle_horaire, $spectacle_description, $spectacle_duree);
 
             $spectacle = $r->getSpectacleByID($idspectacle);
             $spectacle->setSpectacleID($idspectacle);

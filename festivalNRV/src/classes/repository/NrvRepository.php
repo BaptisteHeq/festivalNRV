@@ -80,38 +80,7 @@ class NrvRepository
         $stmt->execute(['soireeID' => $soireeID]);
         //créer un tableau de spectacles
         $liste= $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $spectacles = [];
-        foreach ($liste as $sp){
-            $media = [];
-            $sql = "SELECT cheminFichier FROM media WHERE mediaID IN (SELECT mediaID FROM spectacle_media WHERE spectacleID = :spectacleID)";
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->execute(['spectacleID' => $sp['spectacleID']]);
-            $media = $stmt->fetchAll(PDO::FETCH_COLUMN);
-
-            //tri des images et vidéos
-            $images = [];
-            $videos = [];
-            foreach ($media as $m){
-                if (strpos($m, 'mp4') !== false){
-                    $videos[] = $m;
-                } else {
-                    $images[] = $m;
-                }
-            }
-
-            $artistes = [];
-            $sql = "SELECT nomArtiste FROM artiste WHERE artisteID IN (SELECT artisteID FROM spectacle_artiste WHERE spectacleID = :spectacleID)";
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->execute(['spectacleID' => $sp['spectacleID']]);
-            $artistes = $stmt->fetchAll(PDO::FETCH_COLUMN);
-
-            $spectacle = new Spectacle($sp['nomSpectacle'], $sp['dateSpectacle'], $sp['styleID'], $sp['horaire'], $images, $sp['description'], $videos, $artistes, $sp['duree']);
-            $spectacle->setSpectacleID($sp['spectacleID']);
-            $spectacles[] = $spectacle;
-
-
-        }
-        return $spectacles;
+        return $this->creerListeSpectacle($liste);
     }
 
     /* le lieu par l'id */
@@ -220,6 +189,11 @@ class NrvRepository
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['artisteIDs' => $artisteIDs]);
 
+        //supprimer les liens entre spectacle et soiree
+        $sql = "DELETE FROM soiree_spectacle WHERE spectacleID = :spectacleID";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['spectacleID' => $spectacleID]);
+
         //supprimer le spectacle
         $sql = "DELETE FROM spectacle WHERE spectacleID = :spectacleID";
         $stmt = $this->pdo->prepare($sql);
@@ -288,39 +262,7 @@ class NrvRepository
         $sql = "SELECT * FROM spectacle";
         $stmt = $this->pdo->query($sql);
         $liste = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $spectacles = [];
-        foreach ($liste as $sp){
-            $media = [];
-            $sql = "SELECT cheminFichier FROM media WHERE mediaID IN (SELECT mediaID FROM spectacle_media WHERE spectacleID = :spectacleID)";
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->execute(['spectacleID' => $sp['spectacleID']]);
-            $media = $stmt->fetchAll(PDO::FETCH_COLUMN);
-
-            //tri des images et vidéos
-            $images = [];
-            $videos = [];
-            foreach ($media as $m){
-                if (strpos($m, 'mp4') !== false){
-                    $videos[] = $m;
-                } else {
-                    $images[] = $m;
-                }
-            }
-
-
-
-            $artistes = [];
-            $sql = "SELECT nomArtiste FROM artiste WHERE artisteID IN (SELECT artisteID FROM spectacle_artiste WHERE spectacleID = :spectacleID)";
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->execute(['spectacleID' => $sp['spectacleID']]);
-            $artistes = $stmt->fetchAll(PDO::FETCH_COLUMN);
-
-            $spectacle = new Spectacle($sp['nomSpectacle'], $sp['dateSpectacle'], $sp['styleID'], $sp['horaire'], $images, $sp['description'], $videos, $artistes, $sp['duree']);
-            $spectacle->setSpectacleID($sp['spectacleID']);
-            $spectacles[] = $spectacle;
-        }
-
-        return $spectacles;
+        return $this->creerListeSpectacle($liste);
     }
 
 
@@ -345,45 +287,16 @@ class NrvRepository
         $sql = "SELECT * FROM spectacle WHERE spectacleID NOT IN (SELECT spectacleID FROM soiree_spectacle)";
         $stmt = $this->pdo->query($sql);
         $liste = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $spectacles = [];
-        foreach ($liste as $sp){
-            $media = [];
-            $sql = "SELECT cheminFichier FROM media WHERE mediaID IN (SELECT mediaID FROM spectacle_media WHERE spectacleID = :spectacleID)";
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->execute(['spectacleID' => $sp['spectacleID']]);
-            $media = $stmt->fetchAll(PDO::FETCH_COLUMN);
-
-            //tri des images et vidéos
-            $images = [];
-            $videos = [];
-            foreach ($media as $m){
-                if (strpos($m, 'mp4') !== false){
-                    $videos[] = $m;
-                } else {
-                    $images[] = $m;
-                }
-            }
-
-            $artistes = [];
-            $sql = "SELECT nomArtiste FROM artiste WHERE artisteID IN (SELECT artisteID FROM spectacle_artiste WHERE spectacleID = :spectacleID)";
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->execute(['spectacleID' => $sp['spectacleID']]);
-            $artistes = $stmt->fetchAll(PDO::FETCH_COLUMN);
-
-            $spectacle = new Spectacle($sp['nomSpectacle'], $sp['dateSpectacle'], $sp['styleID'], $sp['horaire'], $images, $sp['description'], $videos, $artistes, $sp['duree']);
-            $spectacle->setSpectacleID($sp['spectacleID']);
-            $spectacles[] = $spectacle;
-        }
-
-        return $spectacles;
+        return $this->creerListeSpectacle($liste);
     }
 
     /* update spectacle (pas img/vid)*/
-    public function updateSpectacle(int $spectacleID, string $nom, string $date, int $styleID, string $horaire, string $description, string $artistes, int $duree): void
+    public function updateSpectacle(int $spectacleID, string $nom, string $date, int $styleID, string $horaire, string $description,  int $duree): void
     {
-        $sql = "UPDATE spectacle SET NomSpectacle = :nom, DateSpectacle = :date, StyleID = :styleID, horaire = :horaire, description = :description, artistes = :artistes, duree = :duree WHERE SpectacleID = :spectacleID";
+        $sql = "UPDATE spectacle SET nomSpectacle = :nom, dateSpectacle = :date, styleID = :styleID, horaire = :horaire, description = :description,  duree = :duree WHERE spectacleID = :spectacleID";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([ 'nom' => $nom, 'date' => $date, 'styleID' => $styleID, 'horaire' => $horaire, 'description' => $description, 'artistes' => $artistes, 'duree' => $duree, 'spectacleID' => $spectacleID]);
+        $stmt->execute(['nom' => $nom, 'date' => $date, 'styleID' => $styleID, 'horaire' => $horaire, 'description' => $description, 'duree' => $duree, 'spectacleID' => $spectacleID]);
+
     }
 
     public function getIdSpectacle(string $nom, string $date, string $horaire): int
@@ -531,11 +444,45 @@ class NrvRepository
         return $stmt->rowCount() > 0;
     }
 
+    /**
+     * @param $liste
+     * @return array
+     */
+    public function creerListeSpectacle($liste): array
+    {
+        $spectacles = [];
+        foreach ($liste as $sp) {
+            $media = [];
+            $sql = "SELECT cheminFichier FROM media WHERE mediaID IN (SELECT mediaID FROM spectacle_media WHERE spectacleID = :spectacleID)";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute(['spectacleID' => $sp['spectacleID']]);
+            $media = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+            //tri des images et vidéos
+            $images = [];
+            $videos = [];
+            foreach ($media as $m) {
+                if (strpos($m, 'mp4') !== false) {
+                    $videos[] = $m;
+                } else {
+                    $images[] = $m;
+                }
+            }
+
+            $artistes = [];
+            $sql = "SELECT nomArtiste FROM artiste WHERE artisteID IN (SELECT artisteID FROM spectacle_artiste WHERE spectacleID = :spectacleID)";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute(['spectacleID' => $sp['spectacleID']]);
+            $artistes = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+            $spectacle = new Spectacle($sp['nomSpectacle'], $sp['dateSpectacle'], $sp['styleID'], $sp['horaire'], $images, $sp['description'], $videos, $artistes, $sp['duree']);
+            $spectacle->setSpectacleID($sp['spectacleID']);
+            $spectacles[] = $spectacle;
+
+
+        }
+        return $spectacles;
+    }
+
 }
-
-
-
-
-
-
 
