@@ -19,8 +19,10 @@ class Spectacle
     private array $video=[];
     private array $artistes=[];
     private int $duree=0;
+    private int $estAnnule=0;
+    private array $lieu=[];
 
-    public function __construct(string $nom, string $date, int $styleID, string $horaire, array $img, string $description, array $video, array $artistes, int $duree)
+    public function __construct(string $nom, string $date, int $styleID, string $horaire, array $img, string $description, array $video, array $artistes, int $duree, int $estAnnule, array $lieu)
     {
         $this->nom = $nom;
         $this->date = $date;
@@ -31,6 +33,8 @@ class Spectacle
         $this->video = $video;
         $this->artistes = $artistes;
         $this->duree = $duree;
+        $this->estAnnule = $estAnnule;
+        $this->lieu = $lieu;
     }
 
 
@@ -105,6 +109,21 @@ class Spectacle
     public function getDuree(): int
     {
         return $this->duree;
+    }
+
+    public function getEstAnnule(): int
+    {
+        return $this->estAnnule;
+    }
+
+    public function setEstAnnule(int $estAnnule): void
+    {
+        $this->estAnnule = $estAnnule;
+    }
+
+    public function getLieu(): array
+    {
+        return $this->lieu;
     }
 
 

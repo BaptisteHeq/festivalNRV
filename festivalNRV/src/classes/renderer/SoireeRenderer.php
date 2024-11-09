@@ -29,7 +29,7 @@ tarifs, ainsi que la liste des spectacles : titre, artistes, description, style 
             $html .= '<p>Thématique: ' . $this->soiree->getThematique() . '</p>';
             $html .= '<p>Date: ' . $this->soiree->getDate() . '</p>';
             $html .= '<p>Horaire: ' . $this->soiree->getHoraire() . '</p>';
-            $html .= '<p>Lieu: ' . $this->soiree->getLieu() . '</p>';
+            $html .= '<p>Lieu: ' . $this->soiree->getLieu()['nomLieu'] . '</p>';
             $html .= '<p>Tarifs: ' . $this->soiree->getPrix() . '</p>';
             $html .= '<p><b>Liste des spectacles</b></p>';
             $html .= '<ul>';

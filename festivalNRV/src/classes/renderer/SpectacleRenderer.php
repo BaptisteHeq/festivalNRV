@@ -21,13 +21,19 @@ class SpectacleRenderer implements Renderer
             $html .= '<p><b>' . $this->spectacle->getNom() . '</b></p>';
             $html .= '<p>Date: ' . $this->spectacle->getDate() . '</p>';
             $html .= '<p>Style: ' . $this->spectacle->getStyle() . '</p>';
-            $html .= '<p>Horaire: ' . $this->spectacle->getHoraire() . '</p>';
+            if ($this->spectacle->getEstAnnule() == 1) {
+                $html .= '<p>Annulé</p>';
+            } else {
+                $html .= '<p>Horaire: ' . $this->spectacle->getHoraire() . '</p>';
+                $html .= '<p>à : ' . $this->spectacle->getLieu()['nomLieu'] . '</p>';
+            }
             //afficher les images
             $html .= '<p>Images: ';
             foreach ($this->spectacle->getImg() as $img) {
                 $html .= '<img src="./media/' . $img . '" alt="image spectacle" width="100px">';
             }
             $html .= '</p>';
+
         } else if ($selector == Renderer::DETAIL) {
             /*ffichage détaillé d’un spectacle : titre, artistes, description, style, durée, image(s), extrait audio/vidéo*/
             $html .= '<p><b>' . $this->spectacle->getNom() . '</b></p>';
@@ -38,8 +44,13 @@ class SpectacleRenderer implements Renderer
             }
             $html .= '</p>';
             $html .= '<p>Description: ' . $this->spectacle->getDescription() . '</p>';
+            if ($this->spectacle->getEstAnnule() == 1) {
+                $html .= '<p>Annulé</p>';
+            }
             $html .= '<p>Style: ' . $this->spectacle->getStyle() . '</p>';
             $html .= '<p>Durée: ' . $this->spectacle->getDuree() . '</p>';
+            //afficher le lieu
+            $html .= '<p>à : ' . $this->spectacle->getLieu()['nomLieu'] . '</p>';
             //afficher les images
             $html .= '<p>Images: ';
             foreach ($this->spectacle->getImg() as $img) {
@@ -53,11 +64,13 @@ class SpectacleRenderer implements Renderer
             }
             $html .= '</p>';
 
+
         }
         //ajouter lien pour supprimer spectacle
         $html .= '<ul>';
         $html .= '<li><a href="index.php?action=delete-spectacle&idSpectacle=' . $this->spectacle->getSpectacleID() . '">Supprimer spectacle</a></li>';
         $html .= '<li><a href="index.php?action=update-spectacle&idSpectacle=' . $this->spectacle->getSpectacleID() . '">Modifier spectacle</a></li>';
+        $html .= '<li><a href="index.php?action=annuler&idSpectacle=' . $this->spectacle->getSpectacleID() . '">Annuler le spectacle</a></li>';
         $html .= '<li><a href="index.php?action=add-spec-to-soiree">Ajouter spectacle à une soirée</a></li>';
         $html .= '<li><a href="index.php?action=delete-spectacle-to-soiree">Supprimer spectacle à une soirée</a></li>';
         $html .= '</ul>';

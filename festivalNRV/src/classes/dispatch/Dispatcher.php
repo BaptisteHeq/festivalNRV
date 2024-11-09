@@ -6,6 +6,7 @@ use iutnc\nrv\action\AddSoireeAction;
 use iutnc\nrv\action\AddSpectacleToSoireeAction;
 use iutnc\nrv\action\AfficherSpectaclesAction;
 
+use iutnc\nrv\action\AnnulerAction;
 use iutnc\nrv\action\DefaultAction;
 use iutnc\nrv\action\AddSpectacleAction;
 use iutnc\nrv\action\DeleteSoireeAction;
@@ -37,6 +38,10 @@ class Dispatcher
     public function run()
     {
         switch ($this->action) {
+            case 'annuler':
+                $action = new AnnulerAction();
+                $html = $action->execute();
+                break;
             case 'delete-spectacle-to-soiree':
                 $action = new DeleteSpectacleToSoireeAction();
                 $html = $action->execute();
@@ -146,13 +151,10 @@ class Dispatcher
     
     <nav>
     <ul>
+    <li><a href="?action=delete-spectacle-to-soiree"> supprimer un spectacle d'une soirée </a></li>
     <li><a href="?action=add-spec-to-soiree">Ajouter un spectacle à une soirée</a></li>
-    <li><a href="?action=delete-soiree">Supprimer une soirée</a></li>
     <li><a href="?action=add-soiree">Ajouter une soirée</a></li>
-    <li><a href="?action=soiree">Soirée</a></li>
-    <li><a href="?action=spectacle-detail">Spectacle en session</a></li>
     <li><a href="?action=add-spectacle">Ajouter un spectacle</a></li>
-    <li><a href="?action=update-spectacle">Editer le spectacle en session</a></li>
     <li><a href="?action=programme">Programme</a></li>
     <li><a href="?action=display_spectacle">Liste des spectacles</a></li>
     <li><a href="?action=update-role">Mettre à jour le role d'un utilisateur</a></li>

@@ -28,10 +28,10 @@ class UpdateRoleAction extends Action
             $html .= "<form method='post' action='?action=update-role'>";
             $html .= '<select name="id" required>';
             foreach ($users as $user) {
-                $id = $user["UtilisateurID"];
+                $id = $user["id"];
 
                 if ($id != null)
-                    $html .= '<option value=' . $id . '> email: ' . $user['EmailUtilisateur'] . "/role: " . $user['role'] . '</option>';
+                    $html .= '<option value=' . $id . '> email: ' . $user['email'] . "/role: " . $user['role'] . '</option>';
             }
             $html .= '</select>';
             $html .= '<label> role : </label>';

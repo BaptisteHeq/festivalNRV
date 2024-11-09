@@ -64,7 +64,7 @@ class Soiree
         return $this->date;
     }
 
-    public function getLieu(): string
+    public function getLieu(): array
     {
         $r = NrvRepository::getInstance();
         return $r->getLieuByID($this->lieuID);

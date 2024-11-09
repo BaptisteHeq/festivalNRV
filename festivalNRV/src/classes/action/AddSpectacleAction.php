@@ -41,6 +41,18 @@ HTML;
 
             $html .= <<<HTML
     </select> <br>
+    <label for="spectacle_lieu">Lieu du spectacle</label> 
+    <select id="spectacle_lieu" name="spectacle_lieu" required>
+HTML;
+
+            // Génération des options de lieu depuis la base de données
+            $lieux = NrvRepository::getInstance()->getLieux();
+            foreach ($lieux as $lieu) {
+                $html .= '<option value=' . $lieu['lieuID'] . '>' . $lieu['nomLieu'] . '</option>';
+            }
+
+            $html .= <<<HTML
+            
     <label for="spectacle_horaire">Horaire du spectacle</label>
     <input type="time" id="spectacle_horaire" name="spectacle_horaire" required> <br>
     
@@ -112,6 +124,8 @@ HTML;
             $spectacle_horaire = filter_var($_POST['spectacle_horaire'], FILTER_SANITIZE_STRING);
             $spectacle_description = filter_var($_POST['spectacle_description'], FILTER_SANITIZE_STRING);
             $spectacle_duree = filter_var($_POST['spectacle_duree'], FILTER_SANITIZE_STRING);
+            $spectacle_lieu = filter_var($_POST['spectacle_lieu'], FILTER_SANITIZE_NUMBER_INT);
+
             // Récupérer les artistes (tableau de noms)
             $spectacle_artistes = array_map(function ($artiste) {
                 return filter_var($artiste, FILTER_SANITIZE_STRING);
@@ -145,11 +159,10 @@ HTML;
 
 
 
-
-            $spectacle = new Spectacle($spectacle_name, $spectacle_date, (int)$spectacle_style, $spectacle_horaire, $images, $spectacle_description, $videos, $spectacle_artistes, $spectacle_duree);
-
             $r= NrvRepository::getInstance();
-            $id = $r->addSpectacle($spectacle_name,(int) $spectacle_style,$spectacle_date,0, $spectacle_horaire, $images, $spectacle_description, $videos, $spectacle_artistes, $spectacle_duree);
+            $spectacle = new Spectacle($spectacle_name, $spectacle_date, (int)$spectacle_style, $spectacle_horaire, $images, $spectacle_description, $videos, $spectacle_artistes, $spectacle_duree, 0, $r->getLieuById($spectacle_lieu));
+
+            $id = $r->addSpectacle($spectacle_name,(int) $spectacle_style,$spectacle_date,0, $spectacle_horaire, $images, $spectacle_description, $videos, $spectacle_artistes, $spectacle_duree, $spectacle_lieu);
             $spectacle->setSpectacleID($id);
             $_SESSION['spectacle'] = serialize($spectacle);
             $html .= 'Spectacle ajouté avec succès';
