@@ -124,12 +124,11 @@ class Dispatcher
         $this->renderPage($html);
     }
 
-    public function renderPage ($html)
+    public function renderPage($html)
     {
-        $email = "pas connecté";
-        $nom = "pas connecté";
-        if(isset($_SESSION['email']))
-        {
+        $email = "Pas connecté";
+        $nom = "Pas connecté";
+        if (isset($_SESSION['email'])) {
             $email = $_SESSION['email'];
             $r = NrvRepository::getInstance();
             $nom = $r->getNomUser($email);
@@ -155,36 +154,45 @@ class Dispatcher
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Festival NRV</title>
-    </head>
-    <header>
-    <h1>Festival NRV</h1>
-    <h2>utilisateur : $email, $nom</h2>
-    $DecoReco
-    <nav>
-    <ul>
-    <li><a href="?action=delete-spectacle-to-soiree"> supprimer un spectacle d'une soirée </a></li>
-    <li><a href="?action=add-spec-to-soiree">Ajouter un spectacle à une soirée</a></li>
-    <li><a href="?action=add-soiree">Ajouter une soirée</a></li>
-    <li><a href="?action=add-spectacle">Ajouter un spectacle</a></li>
-    <li><a href="?action=programme">Programme</a></li>
-    <li><a href="?action=display_spectacle">Liste des spectacles</a></li>
-    <li><a href="?action=update-role">Mettre à jour le role d'un utilisateur</a></li>
-    </ul>
-    <form action="?action=search" method="post" style="float: right; margin-top: -250px; margin-right: 200px;">
-    <input type="text" name="NomSp" placeholder="Recherche..." required>
-    <button type="submit">Rechercher</button>
-    </form>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Festival NRV</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="?action=programme">Programme</a></li>
+                    <li class="nav-item"><a class="nav-link" href="?action=display_spectacle">Liste des spectacles</a></li>
+                    <li class="nav-item"><a class="nav-link" href="?action=add-spectacle">Ajouter un spectacle</a></li>
+                    <li class="nav-item"><a class="nav-link" href="?action=add-soiree">Ajouter une soirée</a></li>
+                    <li class="nav-item"><a class="nav-link" href="?action=update-role">Mettre à jour le rôle d'un utilisateur</a></li>
+                </ul>
+                <form class="d-flex" action="?action=search" method="post">
+                    <input class="form-control me-2" type="search" name="NomSp" placeholder="Recherche..." required>
+                    <button class="btn btn-outline-success" type="submit">Rechercher</button>
+                </form>
+                <div class="ms-3">
+                    <span class="text-white">Utilisateur : $email, $nom</span>
+                    $DecoReco
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-4">
+        <div class="content">
+            $html
+        </div>
+    </div>
 
-    </header>
-    
-    <main>
-    $html
-    </main>
-    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>
-
 HTML;
-
     }
 
 }

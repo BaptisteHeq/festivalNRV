@@ -22,21 +22,22 @@ class DisplaySoireeAction extends Action
 
     public function execute(): string
     {
-        if(!AuthzProvider::isAuthorized($this->role))
-            return "Vous n'êtes pas autorisé à accéder à cette page";
+        if (!AuthzProvider::isAuthorized($this->role))
+            return '<div class="alert alert-danger">Vous n\'êtes pas autorisé à accéder à cette page</div>';
 
-        $html = "";
-        if (! isset($_SESSION['soiree'])) {
-            $html .= 'soiree introuvable';
-        } else
-        {
+        $html = '<div class="container mt-4">';
+        $html .= '<h3 class="mb-4">Détails de la soirée</h3>';
+
+        if (!isset($_SESSION['soiree'])) {
+            $html .= '<div class="alert alert-warning">Soirée introuvable</div>';
+        } else {
             $soiree = unserialize($_SESSION['soiree']);
             $re = new SoireeRenderer($soiree);
-            $html .= $re->render(Renderer::COMPACT);
-
+            $html .= '<div class="card p-3">' . $re->render(Renderer::COMPACT) . '</div>';
         }
-        return $html;
 
+        $html .= '</div>';
+        return $html;
     }
 }
 

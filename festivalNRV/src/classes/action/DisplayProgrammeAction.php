@@ -21,23 +21,29 @@ class DisplayProgrammeAction extends Action
 
     public function execute(): string
     {
-        if(!AuthzProvider::isAuthorized($this->role))
-            return "Vous n'êtes pas autorisé à accéder à cette page";
+        if (!AuthzProvider::isAuthorized($this->role))
+            return '<div class="alert alert-danger">Vous n\'êtes pas autorisé à accéder à cette page</div>';
 
-        $html = "";
+        $html = '<div class="container mt-4">';
+        $html .= '<h3 class="mb-4">Programme des soirées</h3>';
+
         $r = NrvRepository::getInstance();
         $soirees = $r->getSoirees();
-        $html .= '<p><b>Affichage des soirees</b></p><br>';
-        foreach ($soirees as $s){
 
-            //ajout des spectacles
-            $spectacles = $r->getSpectaclesByIDsoiree($s->getSoireeID());
-            foreach ($spectacles as $sp){
-                $s->addSpectacle($sp);
+        if (empty($soirees)) {
+            $html .= '<div class="alert alert-warning">Aucune soirée trouvée.</div>';
+        } else {
+            foreach ($soirees as $s) {
+                $spectacles = $r->getSpectaclesByIDsoiree($s->getSoireeID());
+                foreach ($spectacles as $sp) {
+                    $s->addSpectacle($sp);
+                }
+                $re = new SoireeRenderer($s);
+                $html .= '<div class="card mb-3">' . $re->render(Renderer::COMPACT) . '</div>';
             }
-            $re = new SoireeRenderer($s);
-            $html .= $re->render(Renderer::COMPACT);
         }
+
+        $html .= '</div>';
         return $html;
     }
 }

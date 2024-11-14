@@ -16,8 +16,8 @@ class DeleteSpectacleToSoireeAction extends Action
 
     public function execute(): string
     {
-        if(!AuthzProvider::isAuthorized($this->role))
-            return "Vous n'êtes pas autorisé à accéder à cette page";
+        if (!AuthzProvider::isAuthorized($this->role))
+            return '<div class="alert alert-danger">Vous n\'êtes pas autorisé à accéder à cette page</div>';
         $html = '<p><b>Suppression du spectacle de la soirée</b></p><br>';
 
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
