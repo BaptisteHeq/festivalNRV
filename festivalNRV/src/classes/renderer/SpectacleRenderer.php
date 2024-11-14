@@ -4,6 +4,7 @@ namespace iutnc\nrv\renderer;
 
 use iutnc\nrv\evenement\programme\Programme;
 use iutnc\nrv\evenement\spectacle\Spectacle;
+use iutnc\nrv\repository\NrvRepository;
 
 class SpectacleRenderer implements Renderer
 {
@@ -85,19 +86,77 @@ class SpectacleRenderer implements Renderer
             $html .= '</div>';
             $html .= '</div>';
             $html .= '</div>';
+
+
+            $html .= '<ul class="list-group list-group-flush my-4">';
+            $html .= '<li class="list-group-item d-flex flex-wrap gap-2">';
+
+            $html .= '<a href="index.php?action=delete-spectacle&idSpectacle=' . $this->spectacle->getSpectacleID() . '" class="btn btn-danger btn-sm">Supprimer spectacle</a>';
+            $html .= '<a href="index.php?action=update-spectacle&idSpectacle=' . $this->spectacle->getSpectacleID() . '" class="btn btn-warning btn-sm">Modifier spectacle</a>';
+            $html .= '<a href="index.php?action=annuler&idSpectacle=' . $this->spectacle->getSpectacleID() . '" class="btn btn-secondary btn-sm">Annuler le spectacle</a>';
+            $html .= '<a href="index.php?action=add-spec-to-soiree" class="btn btn-success btn-sm">Ajouter spectacle à une soirée</a>';
+            $html .= '<a href="index.php?action=delete-spectacle-to-soiree" class="btn btn-danger btn-sm">Supprimer spectacle à une soirée</a>';
+
+            $html .= '</li>';
+            $html .= '</ul>';
+
+            //spectacles du même style
+            $html .= '<div class="container my-4">';
+            $html .= '<h5>Spectacles du même style</h5>';
+            $html .= '<div class="row row-cols-1 row-cols-md-3 g-4">';
+            $r = NrvRepository::getInstance();
+            $spectacles = $r->getSpectaclesByStyle($this->spectacle->getStyleID());
+            foreach ($spectacles as $sp) {
+                if ($sp->getSpectacleID() != $this->spectacle->getSpectacleID()) {
+                    $html .= '<div class="col">';
+                    $html .= '<a href="?action=spectacle-detail&idSpectacle=' . $sp->getSpectacleID() . '">';
+                    $re = new SpectacleRenderer($sp);
+                    $html .= $re->render(Renderer::COMPACT);
+                    $html .= '</a>';
+                    $html .= '</div>';
+                }
+            }
+            $html .= '</div>';
+            $html .= '</div>';
+
+            //spectacles du même lieu
+            $html .= '<div class="container my-4">';
+            $html .= '<h5>Spectacles du même lieu</h5>';
+            $html .= '<div class="row row-cols-1 row-cols-md-3 g-4">';
+            $r = NrvRepository::getInstance();
+            $spectacles = $r->getSpectaclesByLieu($this->spectacle->getLieu()['lieuID']);
+            foreach ($spectacles as $sp) {
+                if ($sp->getSpectacleID() != $this->spectacle->getSpectacleID()) {
+                    $html .= '<div class="col">';
+                    $html .= '<a href="?action=spectacle-detail&idSpectacle=' . $sp->getSpectacleID() . '">';
+                    $re = new SpectacleRenderer($sp);
+                    $html .= $re->render(Renderer::COMPACT);
+                    $html .= '</a>';
+                    $html .= '</div>';
+                }
+            }
+            $html .= '</div>';
+            $html .= '</div>';
+
+            //spectacles à la même date
+            $html .= '<div class="container my-4">';
+            $html .= '<h5>Spectacles à la même date</h5>';
+            $html .= '<div class="row row-cols-1 row-cols-md-3 g-4">';
+            $r = NrvRepository::getInstance();
+            $spectacles = $r->getSpectaclesByDate($this->spectacle->getDate());
+            foreach ($spectacles as $sp) {
+                if ($sp->getSpectacleID() != $this->spectacle->getSpectacleID()) {
+                    $html .= '<div class="col">';
+                    $html .= '<a href="?action=spectacle-detail&idSpectacle=' . $sp->getSpectacleID() . '">';
+                    $re = new SpectacleRenderer($sp);
+                    $html .= $re->render(Renderer::COMPACT);
+                    $html .= '</a>';
+                    $html .= '</div>';
+                }
+            }
+            $html .= '</div>';
+            $html .= '</div>';
         }
-
-        $html .= '<ul class="list-group list-group-flush my-4">';
-        $html .= '<li class="list-group-item d-flex flex-wrap gap-2">';
-
-        $html .= '<a href="index.php?action=delete-spectacle&idSpectacle=' . $this->spectacle->getSpectacleID() . '" class="btn btn-danger btn-sm">Supprimer spectacle</a>';
-        $html .= '<a href="index.php?action=update-spectacle&idSpectacle=' . $this->spectacle->getSpectacleID() . '" class="btn btn-warning btn-sm">Modifier spectacle</a>';
-        $html .= '<a href="index.php?action=annuler&idSpectacle=' . $this->spectacle->getSpectacleID() . '" class="btn btn-secondary btn-sm">Annuler le spectacle</a>';
-        $html .= '<a href="index.php?action=add-spec-to-soiree" class="btn btn-success btn-sm">Ajouter spectacle à une soirée</a>';
-        $html .= '<a href="index.php?action=delete-spectacle-to-soiree" class="btn btn-danger btn-sm">Supprimer spectacle à une soirée</a>';
-
-        $html .= '</li>';
-        $html .= '</ul>';
 
 
         return $html;
