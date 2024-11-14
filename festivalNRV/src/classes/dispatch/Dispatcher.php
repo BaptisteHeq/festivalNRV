@@ -141,9 +141,9 @@ class Dispatcher
         }
 
         $DecoReco = $estConnecte
-                ? '<a href="?action=signout" class="btn btn-danger ms-2">Déconnexion</a>'
-                : '<a href="?action=signin" class="btn btn-primary ms-2">Connexion</a>
-       <a href="?action=register" class="btn btn-warning ms-2">Inscription</a>';
+                ? '<a href="?action=signout" class="btn btn-danger ms-2">Déconnexion</a>
+            <a href="?action=register" class="btn btn-warning ms-2">Inscription</a>'
+                : '<a href="?action=signin" class="btn btn-primary ms-2">Connexion</a>';
 
 
 
