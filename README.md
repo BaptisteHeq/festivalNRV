@@ -42,6 +42,9 @@ administrateur
 - mail : bob@example.com
 - mot de passe : user2
 
+## Données pour la base de donnée
+Dans le ficher script.sql
+
 https://github.com/BaptisteHeq/festivalNRV/tree/main 
 
 https://webetu.iutnc.univ-lorraine.fr/www/hennequ65u/php/index.php?action%20=%20%27accueil%27 
