@@ -23,12 +23,11 @@ class UpdateSpectacleAction extends Action
         if(!isset($_GET['idSpectacle'])){
             return "Pas de spectacle en session";
         }
-        /* récupération du spectacle */
-        $spectacle = unserialize($_SESSION['spectacle']);
 
         $html = "";
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
+            $spectacle = NrvRepository::getInstance()->getSpectacleByID($_GET['idSpectacle']);
             $nom = $spectacle->getNom();
             $date = $spectacle->getDate();
             $horaire = $spectacle->getHoraire();
