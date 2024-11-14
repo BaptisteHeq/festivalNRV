@@ -19,22 +19,22 @@ class DisplaySpectacleDetailAction extends Action
 
     public function execute(): string
     {
-        if(!AuthzProvider::isAuthorized($this->role))
-            return "Vous n'êtes pas autorisé à accéder à cette page";
+        if (!AuthzProvider::isAuthorized($this->role))
+            return '<div class="alert alert-danger">Vous n\'êtes pas autorisé à accéder à cette page</div>';
 
-        $html = '<p><b>Affichage du spectacle en session</b></p><br>';
+        $html = '<div class="container mt-4">';
+        $html .= '<h3 class="mb-4">Détails du spectacle</h3>';
 
-        if (! isset($_GET['idSpectacle'])) {
-            $html .= 'spectacle introuvable';
-        } else
-        {
+        if (!isset($_GET['idSpectacle'])) {
+            $html .= '<div class="alert alert-warning">Spectacle introuvable</div>';
+        } else {
             $r = NrvRepository::getInstance();
             $pl = $r->getSpectacleById($_GET['idSpectacle']);
-            $r = new SpectacleRenderer($pl);
-            $html .= $r->render(Renderer::DETAIL);
+            $renderer = new SpectacleRenderer($pl);
+            $html .= '<div class="card p-3">' . $renderer->render(Renderer::DETAIL) . '</div>';
         }
 
-
+        $html .= '</div>';
         return $html;
     }
 }

@@ -19,21 +19,21 @@ class DisplaySpectacleAction extends Action
 
     public function execute(): string
     {
-        if(!AuthzProvider::isAuthorized($this->role))
-            return "Vous n'êtes pas autorisé à accéder à cette page";
+        if (!AuthzProvider::isAuthorized($this->role))
+            return '<div class="alert alert-danger">Vous n\'êtes pas autorisé à accéder à cette page</div>';
 
-        $html = '<p><b>Affichage du spectacle en session</b></p><br>';
+        $html = '<div class="container mt-4">';
+        $html .= '<h3 class="mb-4">Détails du spectacle</h3>';
 
-        if (! isset($_SESSION['spectacle'])) {
-            $html .= 'spectacle introuvable';
-        } else
-        {
+        if (!isset($_SESSION['spectacle'])) {
+            $html .= '<div class="alert alert-warning">Spectacle introuvable</div>';
+        } else {
             $pl = unserialize($_SESSION['spectacle']);
             $r = new SpectacleRenderer($pl);
-            $html .= $r->render(Renderer::COMPACT);
+            $html .= '<div class="card p-3">' . $r->render(Renderer::COMPACT) . '</div>';
         }
 
-
+        $html .= '</div>';
         return $html;
     }
 }

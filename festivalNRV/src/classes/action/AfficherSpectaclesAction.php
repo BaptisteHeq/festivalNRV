@@ -20,8 +20,8 @@ class AfficherSpectaclesAction extends Action
 
     public function execute(): string
     {
-        if(!AuthzProvider::isAuthorized($this->role))
-            return "Vous n'êtes pas autorisé à accéder à cette page";
+        if (!AuthzProvider::isAuthorized($this->role))
+            return '<div class="alert alert-danger">Vous n\'êtes pas autorisé à accéder à cette page</div>';
 
         $html = '<p><b>Affichage de la liste de tous les spectacles</b></p><br>';
 
