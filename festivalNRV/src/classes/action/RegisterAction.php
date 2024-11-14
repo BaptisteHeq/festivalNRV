@@ -13,7 +13,7 @@ class RegisterAction extends Action
     public function __construct()
     {
         parent::__construct();
-        $this->role = 1;
+        $this->role = 100;
     }
 
     public function execute(): string{
