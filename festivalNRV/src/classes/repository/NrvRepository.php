@@ -230,7 +230,7 @@ class NrvRepository
     public function deleteSoiree(int $soireeID): void
     {
         //select les spectacles de la soirée
-        $sql = "SELECT SpectacleID FROM spectacle WHERE SoireeID = :soireeID";
+        $sql = "SELECT spectacleID FROM soiree_spectacle WHERE soireeID = :soireeID";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['soireeID' => $soireeID]);
         $spectacles = $stmt->fetchAll(PDO::FETCH_ASSOC);

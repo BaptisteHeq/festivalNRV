@@ -25,63 +25,84 @@ class AddSpectacleAction extends Action
             $html .= <<<HTML
 <h2>Créer un nouveau spectacle</h2>
 <form method="post" action="?action=add-spectacle" enctype="multipart/form-data">
-    <label for="spectacle_name">Nom du spectacle</label> 
-    <input type="text" id="spectacle_name" name="spectacle_name" required> <br>
-    <label for="spectacle_date">Date du spectacle</label>
-    <input type="date" id="spectacle_date" name="spectacle_date" required>  <br>
-    <label for="spectacle_style">Style du spectacle</label> 
-    <select id="spectacle_style" name="spectacle_style" required>
+    <div class="form-group">
+        <label for="spectacle_name">Nom du spectacle</label> 
+        <input type="text" id="spectacle_name" name="spectacle_name" class="form-control" required>
+    </div>
+    
+    <div class="form-group">
+        <label for="spectacle_date">Date du spectacle</label>
+        <input type="date" id="spectacle_date" name="spectacle_date" class="form-control" required>
+    </div>
+
+    <div class="form-group">
+        <label for="spectacle_style">Style du spectacle</label> 
+        <select id="spectacle_style" name="spectacle_style" class="form-control" required>
 HTML;
 
-// Génération des options de style depuis la base de données
             $styles = NrvRepository::getInstance()->getStyles();
             foreach ($styles as $style) {
                 $html .= '<option value=' . $style['styleID'] . '>' . $style['nomStyle'] . '</option>';
             }
 
             $html .= <<<HTML
-    </select> <br>
-    <label for="spectacle_lieu">Lieu du spectacle</label> 
-    <select id="spectacle_lieu" name="spectacle_lieu" required>
+        </select>
+    </div>
+    
+    <div class="form-group">
+        <label for="spectacle_lieu">Lieu du spectacle</label> 
+        <select id="spectacle_lieu" name="spectacle_lieu" class="form-control" required>
 HTML;
 
-            // Génération des options de lieu depuis la base de données
             $lieux = NrvRepository::getInstance()->getLieux();
             foreach ($lieux as $lieu) {
                 $html .= '<option value=' . $lieu['lieuID'] . '>' . $lieu['nomLieu'] . '</option>';
             }
 
             $html .= <<<HTML
-            
-    <label for="spectacle_horaire">Horaire du spectacle</label>
-    <input type="time" id="spectacle_horaire" name="spectacle_horaire" required> <br>
+        </select>
+    </div>
     
-    <label for="spectacle_description">Description du spectacle</label>
-    <input type="text" id="spectacle_description" name="spectacle_description" required> <br>
-    <label for="spectacle_duree">Durée du spectacle</label>
-    <input type="number" id="spectacle_duree" name="spectacle_duree" required> <br>
-
-    <label for="spectacle_artistes">Artistes du spectacle</label>
-    <div id="artistes_container">
-        <input type="text" name="spectacle_artistes[]" required> <br>
+    <div class="form-group">
+        <label for="spectacle_horaire">Horaire du spectacle</label>
+        <input type="time" id="spectacle_horaire" name="spectacle_horaire" class="form-control" required>
     </div>
-    <button type="button" onclick="addArtisteField()">Ajouter un artiste</button> <br><br>
-
-    <!-- Images Section -->
-    <label>Images du spectacle</label> <br>
-    <div id="images_container">
-        <input type="file" accept="image/png" name="spectacle_images[]" required> <br>
-    </div>
-    <button type="button" onclick="addImageField()">Ajouter une image</button> <br><br>
-
-    <!-- Videos Section -->
-    <label>Vidéos du spectacle</label> <br>
-    <div id="videos_container">
-        <input type="file" accept="video/mp4" name="spectacle_videos[]" required> <br>
-    </div>
-    <button type="button" onclick="addVideoField()">Ajouter une vidéo</button> <br><br>
     
-    <input type="submit" value="Créer le spectacle">
+    <div class="form-group">
+        <label for="spectacle_description">Description du spectacle</label>
+        <input type="text" id="spectacle_description" name="spectacle_description" class="form-control" required>
+    </div>
+
+    <div class="form-group">
+        <label for="spectacle_duree">Durée du spectacle (en minutes)</label>
+        <input type="number" id="spectacle_duree" name="spectacle_duree" class="form-control" required>
+    </div>
+
+    <div class="form-group">
+        <label for="spectacle_artistes">Artistes du spectacle</label>
+        <div id="artistes_container">
+            <input type="text" name="spectacle_artistes[]" class="form-control" required> <br>
+        </div>
+        <button type="button" class="btn btn-add" onclick="addArtisteField()">Ajouter un artiste</button>
+    </div>
+    
+    <div class="form-group">
+        <label>Images du spectacle</label>
+        <div id="images_container">
+            <input type="file" accept="image/png" name="spectacle_images[]" class="form-control-file" required> <br>
+        </div>
+        <button type="button" class="btn btn-add" onclick="addImageField()">Ajouter une image</button>
+    </div>
+    
+    <div class="form-group">
+        <label>Vidéos du spectacle</label>
+        <div id="videos_container">
+            <input type="file" accept="video/mp4" name="spectacle_videos[]" class="form-control-file" required> <br>
+        </div>
+        <button type="button" class="btn btn-add" onclick="addVideoField()">Ajouter une vidéo</button>
+    </div>
+
+    <input type="submit" value="Créer le spectacle" class="btn btn-primary btn-block mt-3">
 </form>
 
 <script>

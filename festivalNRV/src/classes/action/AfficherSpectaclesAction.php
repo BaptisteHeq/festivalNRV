@@ -78,8 +78,10 @@ class AfficherSpectaclesAction extends Action
             $r = NrvRepository::getInstance();
             $spectacles = $r->getSpectacles();
             foreach ($spectacles as $spectacle) {
+                $html .= '<a href="?action=spectacle-detail&idSpectacle=' . $spectacle->getSpectacleID() . '">';
                 $renderer = new SpectacleRenderer($spectacle);
                 $html .= $renderer->render(Renderer::COMPACT);
+                $html .= '</a>';
             }
 
             // Script JavaScript pour afficher le bon filtre
@@ -132,8 +134,10 @@ class AfficherSpectaclesAction extends Action
             // Affichez les résultats
             if (!empty($spectacles)) {
                 foreach ($spectacles as $spectacle) {
+                    $html .= '<a href="?action=spectacle-detail&idSpectacle=' . $spectacle->getSpectacleID() . '">';
                     $renderer = new SpectacleRenderer($spectacle);
                     $html .= $renderer->render(Renderer::COMPACT);
+                    $html .= '</a>';
                 }
             } else {
                 $html .= "<p>Aucun spectacle trouvé pour ce filtre.</p>";

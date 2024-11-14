@@ -23,29 +23,55 @@ class AddSoireeAction extends Action
 
         $html = "";
         if ($_SERVER['REQUEST_METHOD'] === 'GET'){
-            $html .= '<form method="post">';
-            $html .= '<h2>Ajouter une soirée</h2>';
-            $html .= '<p>Remplissez les champs suivants pour ajouter une soirée</p>';
-            $html .= '<label for="nom">Nom de la soirée</label>';
-            $html .= '<input type="text" name="nom" id="nom" required>';
-            $html .= '<label for="date">Date de la soirée</label>';
-            $html .= '<input type="date" name="date" id="date" required>';
-            $html .= '<label for="lieu">Lieu de la soirée</label>';
-            $html .= '<select name="lieu" id="lieu" required>';
+            $html .= <<<HTML
+<form method="post">
+    <h2>Ajouter une soirée</h2>
+    <p>Remplissez les champs suivants pour ajouter une soirée</p>
+
+    <div class="form-group">
+        <label for="nom">Nom de la soirée</label>
+        <input type="text" name="nom" id="nom" class="form-control" required>
+    </div>
+
+    <div class="form-group">
+        <label for="date">Date de la soirée</label>
+        <input type="date" name="date" id="date" class="form-control" required>
+    </div>
+
+    <div class="form-group">
+        <label for="lieu">Lieu de la soirée</label>
+        <select name="lieu" id="lieu" class="form-control" required>
+HTML;
+
             $r = NrvRepository::getInstance();
             $lieux = $r->getLieux();
-            foreach ($lieux as $lieu){
+            foreach ($lieux as $lieu) {
                 $html .= '<option value="' . $lieu['lieuID'] . '">' . $lieu['nomLieu'] . '</option>';
             }
-            $html .= '</select>';
-            $html .= '<label for="horaire">Horaire de la soirée</label>';
-            $html .= '<input type="time" name="horaire" id="horaire" required>';
-            $html .= '<label for="thematique">Thématique de la soirée</label>';
-            $html .= '<input type="text" name="thematique" id="thematique" required>';
-            $html .= '<label for="tarifs">Tarifs de la soirée</label>';
-            $html .= '<input type="number" name="tarifs" id="tarifs" required>';
-            $html .= '<input type="submit" value="Ajouter">';
-            $html .= '</form>';
+
+            $html .= <<<HTML
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="horaire">Horaire de la soirée</label>
+        <input type="time" name="horaire" id="horaire" class="form-control" required>
+    </div>
+
+    <div class="form-group">
+        <label for="thematique">Thématique de la soirée</label>
+        <input type="text" name="thematique" id="thematique" class="form-control" required>
+    </div>
+
+    <div class="form-group">
+        <label for="tarifs">Tarifs de la soirée</label>
+        <input type="number" name="tarifs" id="tarifs" class="form-control" required>
+    </div>
+
+    <input type="submit" value="Ajouter" class="btn btn-success">
+</form>
+HTML;
+
 
         } elseif ($_SERVER['REQUEST_METHOD'] === 'POST'){
             $nom = filter_var($_POST['nom'], FILTER_SANITIZE_STRING);
