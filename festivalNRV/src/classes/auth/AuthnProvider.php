@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace iutnc\nrv\auth;
 
+use Exception;
 use iutnc\nrv\exception\AuthnException;
 use iutnc\nrv\repository\NrvRepository;
 
@@ -52,5 +53,11 @@ class AuthnProvider{
 
         $hash = password_hash($password, PASSWORD_DEFAULT);
         $r->addUser($nom, $email, $hash);
+    }
+    public static function getSignedInUser(): string {
+        if (isset($_SESSION['user'])) {
+            return $_SESSION['user'];
+        }
+        throw new Exception("Aucun utilisateur connecté");
     }
 }

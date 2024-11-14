@@ -27,7 +27,9 @@ class SignOutAction extends Action
         }
         else{
             AuthnProvider::signout();
+            session_destroy();
             $html .= '<p>Vous êtes déconnecté</p>';
+            header('Location: index.php');
         }
 
         return $html;

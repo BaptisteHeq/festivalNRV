@@ -37,8 +37,10 @@ class SignInAction extends Action
             $password = filter_var($_POST['password'], FILTER_SANITIZE_STRING);
             try{
                 $bool = AuthnProvider::signin($email, $password);
-                if($bool)
+                if($bool) {
+                    $_SESSION['user'] = $email;
                     $html .= '<p>Connexion réussie</p>';
+                }
                 else
                     $html .= '<p>Connexion échouée</p>';
 

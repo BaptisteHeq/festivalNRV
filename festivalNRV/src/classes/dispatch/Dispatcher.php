@@ -2,6 +2,7 @@
 
 namespace iutnc\nrv\dispatch;
 
+use Exception;
 use iutnc\nrv\action\AddSoireeAction;
 use iutnc\nrv\action\AddSpectacleToSoireeAction;
 use iutnc\nrv\action\AfficherSpectaclesAction;
@@ -22,6 +23,7 @@ use iutnc\nrv\action\SignOutAction;
 
 use iutnc\nrv\action\SignInAction;
 use iutnc\nrv\action\UpdateSpectacleAction;
+use iutnc\nrv\auth\AuthnProvider;
 use iutnc\nrv\repository\NrvRepository;
 use iutnc\nrv\action\UpdateRoleAction;
 
@@ -132,6 +134,18 @@ class Dispatcher
             $r = NrvRepository::getInstance();
             $nom = $r->getNomUser($email);
         }
+        try{
+            $user = AuthnProvider::getSignedInUser();
+            $estConnecte = true;
+        }catch (Exception $e){
+            $estConnecte = false;
+        }
+
+        $DecoReco = $estConnecte
+            ? '<button onclick="window.location.href=\'?action=signout\';">déconnexion</button>'
+            : '<button onclick="window.location.href=\'?action=signin\';">connexion</button>
+       <button onclick="window.location.href=\'?action=register\';">inscription</button>';
+
 
         echo <<<HTML
 <!DOCTYPE html>
@@ -145,10 +159,7 @@ class Dispatcher
     <header>
     <h1>Festival NRV</h1>
     <h2>utilisateur : $email, $nom</h2>
-    <button onclick="window.location.href='?action=signin';">connexion</button>
-    <button onclick="window.location.href='?action=register';">inscription</button>
-    <button onclick="window.location.href='?action=signout';">déconnexion</button>
-    
+    $DecoReco
     <nav>
     <ul>
     <li><a href="?action=delete-spectacle-to-soiree"> supprimer un spectacle d'une soirée </a></li>
