@@ -38,7 +38,11 @@ replay_pid*
 
 # Ignorer les fichiers de sortie ou de compilation
 /out
-/media/
+
+#ignore les fichiers dans média
+/media/*
+#garder le dossier
+!/media/.gitkeep
 
 vendor/
 composer.lock
