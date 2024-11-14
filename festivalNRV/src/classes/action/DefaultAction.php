@@ -18,6 +18,6 @@ class DefaultAction extends Action
         if (!AuthzProvider::isAuthorized($this->role))
             return '<div class="alert alert-danger">Vous n\'êtes pas autorisé à accéder à cette page</div>';
 
-        return "Hello World";
+        return "Bienvenue sur notre projet FestivalNRV";
     }
 }

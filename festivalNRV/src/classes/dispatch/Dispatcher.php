@@ -114,6 +114,8 @@ class Dispatcher
                 $action = new SearchAction($nom);
                 $html = $action->execute();
                 break;
+            case 'acceuil':
+                header('Location= index.php');
             default:
                 $action = new DefaultAction();
                 $html = $action->execute();
@@ -160,7 +162,7 @@ class Dispatcher
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Festival NRV</a>
+            <a class="navbar-brand" href="?action = 'accueil'">Festival NRV</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
