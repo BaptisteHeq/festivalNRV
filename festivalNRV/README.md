@@ -21,16 +21,16 @@ Festival NRV
 9. [x] En lien avec l’affichage d’un spectacle : accès aux spectacles du même style
 10. [x] En lien avec l’affichage d’un spectacle : accès aux spectacles à la même date
     ### Les fonctionnalités pour les utilisateurs authentifiés membres du staff
-13.[x] S’authentifier
-14.[x] Créer un spectacle : saisir les données et les valider,
-15.[x] Créer une soirée : saisir les données et les valider
-16.[x] Ajouter un spectacle à une soirée,
-17.[x] Annuler un spectacle : le spectacle est conservé dans les affichages mais est marqué
+13. [x] S’authentifier
+14. [x] Créer un spectacle : saisir les données et les valider,
+15. [x] Créer une soirée : saisir les données et les valider
+16. [x] Ajouter un spectacle à une soirée,
+17. [x] Annuler un spectacle : le spectacle est conservé dans les affichages mais est marqué
     comme annulé,
-18.[x] Modifier un spectacle existant
+18. [x] Modifier un spectacle existant
 19. [x] Modifier les spectacles d’une soirée existante
     ### Les fonctionnalités pour les administrateurs
-20.[x] Créer un compte staff : créer un compte utilisateur permettant de gérer le programme 
+20. [x] Créer un compte staff : créer un compte utilisateur permettant de gérer le programme 
 
 
 ## Données pour les utilisateurs inscrits
